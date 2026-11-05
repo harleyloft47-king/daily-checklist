@@ -102,6 +102,19 @@ input{flex:1 1 220px;min-width:0}
 .verdict{font-size:15px;padding-top:12px;border-top:1px solid var(--line)}
 .key{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
 .key i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.install{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:14px}
+.install-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.install h2{margin:0;font-family:var(--display);font-weight:800;font-size:20px}
+.install p{margin:4px 0 0;color:var(--muted);font-size:15px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tabs button{font:inherit;font-size:14px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink);font-weight:700}
+.steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px}
+.steps li{display:list-item;border:0;padding-left:4px}
+.steps b{font-weight:700}
+.steps .k{display:inline-block;padding:0 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);font-size:14px}
+.note{font-size:14px;color:var(--muted)}
+.foot-links{display:flex;gap:14px;flex-wrap:wrap}
 .cheer{text-align:center;font-family:var(--display);font-weight:600;font-size:18px;padding:14px;border-radius:14px;background:var(--surface);border:2px dashed var(--done);color:var(--done)}
 .foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
 .link{background:none;border:0;color:var(--muted);font:inherit;text-decoration:underline;cursor:pointer;padding:0}
@@ -151,9 +164,46 @@ input{flex:1 1 220px;min-width:0}
     <div class="verdict" id="verdict"></div>
   </div>
 
+  <div class="install" id="install">
+    <div class="install-top">
+      <div><h2>Add it to your phone or computer</h2><p>Open it like an app, straight from your home screen.</p></div>
+      <button class="link" id="installHide" type="button">Hide</button>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Device">
+      <button type="button" role="tab" data-dev="iphone">iPhone or iPad</button>
+      <button type="button" role="tab" data-dev="android">Android</button>
+      <button type="button" role="tab" data-dev="pc">Windows or Chromebook</button>
+      <button type="button" role="tab" data-dev="mac">Mac</button>
+    </div>
+    <div role="tabpanel" data-panel="iphone"><ol class="steps">
+      <li>Open this page in <b>Safari</b>.</li>
+      <li>Tap the <b>Share</b> button <span class="k">&#x2B06;&#xFE0E;</span> at the bottom of the screen (on iPad it's at the top).</li>
+      <li>Scroll down and tap <b>Add to Home Screen</b>.</li>
+      <li>Tap <b>Add</b>. The checklist icon appears on your home screen.</li>
+    </ol></div>
+    <div role="tabpanel" data-panel="android" hidden><ol class="steps">
+      <li>Open this page in <b>Chrome</b>.</li>
+      <li>Tap the menu <span class="k">&#x22EE;</span> in the top-right corner.</li>
+      <li>Tap <b>Add to Home screen</b> (it may say <b>Install app</b>).</li>
+      <li>Tap <b>Add</b> or <b>Install</b>. The checklist icon appears on your home screen.</li>
+    </ol></div>
+    <div role="tabpanel" data-panel="pc" hidden><ol class="steps">
+      <li>Open this page in <b>Chrome</b> or <b>Edge</b>.</li>
+      <li>Click the menu <span class="k">&#x22EE;</span> (Chrome) or <span class="k">&#x22EF;</span> (Edge) in the top-right corner.</li>
+      <li>In Chrome, choose <b>Cast, save and share</b> &rarr; <b>Install page as app</b>. In Edge, choose <b>Apps</b> &rarr; <b>Install this site as an app</b>.</li>
+      <li>Click <b>Install</b>. It opens in its own window and shows up in your Start menu.</li>
+    </ol></div>
+    <div role="tabpanel" data-panel="mac" hidden><ol class="steps">
+      <li>Open this page in <b>Safari</b>.</li>
+      <li>In the menu bar, choose <b>File</b> &rarr; <b>Add to Dock</b>.</li>
+      <li>Click <b>Add</b>. The checklist icon appears in your Dock.</li>
+    </ol><p class="note">Using Chrome on a Mac? Follow the Windows steps instead.</p></div>
+    <p class="note">Your checkmarks and progress are saved on each device separately.</p>
+  </div>
+
   <div class="foot">
     <span>Checkmarks clear every morning. Your task list stays.</span>
-    <button class="link" id="resetBtn" type="button">Uncheck all</button>
+    <span class="foot-links"><button class="link" id="installShow" type="button" hidden>How to add to your phone</button><button class="link" id="resetBtn" type="button">Uncheck all</button></span>
   </div>
 </div>
 
@@ -295,6 +345,28 @@ document.getElementById('setDone').onclick=()=>{showSettings(false);gear.focus()
 if(mq&&mq.addEventListener) mq.addEventListener('change',applyTheme);
 new MutationObserver(applyTheme).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 applyTheme();
+
+// ---- Install instructions ----
+(function(){
+  const box=document.getElementById('install'), show=document.getElementById('installShow');
+  const standalone=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
+  const ua=navigator.userAgent||'';
+  let dev='pc';
+  if(/iPhone|iPad|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1)) dev='iphone';
+  else if(/Android/.test(ua)) dev='android';
+  else if(/Macintosh/.test(ua)) dev=/Chrome|Edg/.test(ua)?'pc':'mac';
+  function pick(d){
+    document.querySelectorAll('.tabs [data-dev]').forEach(b=>b.setAttribute('aria-selected',b.dataset.dev===d));
+    document.querySelectorAll('[data-panel]').forEach(p=>p.hidden=p.dataset.panel!==d);
+  }
+  document.querySelectorAll('.tabs [data-dev]').forEach(b=>b.onclick=()=>pick(b.dataset.dev));
+  pick(dev);
+  let hidden=standalone; try{if(localStorage.getItem('dailyChecklist.installHidden')==='1') hidden=true}catch(e){}
+  function setHidden(h){box.hidden=h;show.hidden=!h;try{localStorage.setItem('dailyChecklist.installHidden',h?'1':'0')}catch(e){}}
+  box.hidden=hidden; show.hidden=!hidden;
+  document.getElementById('installHide').onclick=()=>{setHidden(true);show.focus()};
+  show.onclick=()=>{setHidden(false);box.scrollIntoView({behavior:'smooth',block:'start'})};
+})();
 
 document.getElementById('date').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.day!==today()){S=load();save();render()}});
