@@ -207,6 +207,36 @@ input{flex:1 1 220px;min-width:0}
 .filters button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
 .bud-msg{font-size:14px;color:var(--muted)}
 .sublist{display:flex;flex-direction:column;gap:8px}
+@media (max-width:520px){.views button{flex-direction:column;gap:3px;font-size:13px;padding:8px 4px}}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.cal-dow{font-size:12px;font-weight:700;text-align:center;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding-bottom:2px}
+.cal-day{aspect-ratio:1/1.05;max-width:100%;min-width:0;border-radius:10px;border:1px solid transparent;background:var(--bg);color:var(--ink);font:inherit;font-size:15px;font-variant-numeric:tabular-nums;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:6px;gap:4px}
+.cal-day.out{opacity:.35}
+.cal-day.today{border-color:var(--accent);font-weight:800}
+.cal-day[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+.cal-dots{display:flex;gap:3px;flex-wrap:wrap;justify-content:center;max-width:90%}
+.cal-dots i{width:7px;height:7px;border-radius:50%}
+.appt{display:flex;align-items:center;gap:12px;padding:12px 8px 12px 0;cursor:pointer}
+.appt-bar{flex:none;width:5px;align-self:stretch;border-radius:0 4px 4px 0}
+.appt .when{flex:none;min-width:4.6em;font-weight:700;font-variant-numeric:tabular-nums;font-size:15px}
+.appt .when small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.appt .what{flex:1;min-width:0}
+.appt .what b{display:block;overflow-wrap:anywhere}
+.appt .what span{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.appt-btn{background:none;border:0;padding:0;margin:0;font:inherit;color:inherit;text-align:left;display:flex;align-items:center;gap:12px;flex:1;min-width:0;cursor:pointer}
+.type-chips{display:flex;flex-wrap:wrap;gap:6px}
+.type-chips button{font:inherit;font-size:14px;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;display:flex;align-items:center;gap:6px}
+.type-chips button i{width:9px;height:9px;border-radius:50%}
+.type-chips button[aria-pressed="true"]{border-color:var(--ink);background:var(--surface);font-weight:700;box-shadow:inset 0 0 0 1px var(--ink)}
+.form-row{display:flex;gap:8px;flex-wrap:wrap}
+.form-row>*{flex:1 1 140px;min-width:0}
+.cal-form textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-height:70px;resize:vertical;width:100%}
+.cal-form input,.cal-form select{width:100%}
+.cal-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.ghost{font:inherit;font-weight:700;border-radius:12px;padding:12px 16px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.danger{color:var(--over)}
+.banner{display:flex;flex-direction:column;gap:6px;border-left:5px solid var(--accent)}
+.banner .appt{padding:4px 0;cursor:default}
 .cheer{text-align:center;font-family:var(--display);font-weight:600;font-size:18px;padding:14px;border-radius:14px;background:var(--surface);border:2px dashed var(--done);color:var(--done)}
 .foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
 .link{background:none;border:0;color:var(--muted);font:inherit;text-decoration:underline;cursor:pointer;padding:0}
@@ -239,9 +269,11 @@ input{flex:1 1 220px;min-width:0}
     <button type="button" role="tab" id="tabTasks" data-view="tasks" aria-controls="viewTasks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.5 12.5l2.3 2.3 4.7-5"/></svg>Tasks</button>
     <button type="button" role="tab" id="tabGroc" data-view="groceries" aria-controls="viewGroc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2.5l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h7.9a1.5 1.5 0 0 0 1.5-1.1L20.5 8H6.4"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg>Groceries</button>
     <button type="button" role="tab" id="tabBud" data-view="budget" aria-controls="viewBud"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M3 10h13a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2H3"/><path d="M7 6V5a2 2 0 0 1 2-2h8"/></svg>Budget</button>
+    <button type="button" role="tab" id="tabCal" data-view="calendar" aria-controls="viewCal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/><circle cx="12" cy="15" r="1.2" fill="currentColor"/></svg>Calendar</button>
   </div>
 
   <div class="view" id="viewTasks" role="tabpanel" aria-labelledby="tabTasks">
+  <div class="bud-card banner" id="apptBanner" hidden></div>
 
   <div class="cheer" id="cheer" hidden>Everything's done today. Nice work!</div>
   <div id="lists"></div>
@@ -381,6 +413,58 @@ input{flex:1 1 220px;min-width:0}
     </div>
   </div>
 
+  <div class="view" id="viewCal" role="tabpanel" aria-labelledby="tabCal" hidden>
+    <div class="bud-head">
+      <h2>Calendar</h2>
+      <div class="month"><button type="button" id="cPrev" aria-label="Previous month">&lsaquo;</button><span id="cName"></span><button type="button" id="cNext" aria-label="Next month">&rsaquo;</button></div>
+    </div>
+    <div class="bud-card">
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="cal-actions"><button class="link" id="cToday" type="button">Go to today</button></div>
+    </div>
+    <div class="bud-card">
+      <div class="card-top"><div class="left-label" id="dayTitle"></div><button class="add" id="addApptBtn" type="button">+ Add appointment</button></div>
+      <ul id="dayList"></ul>
+      <span class="bud-msg" id="dayEmpty">Nothing booked this day.</span>
+    </div>
+
+    <form class="bud-card cal-form" id="apptForm" hidden>
+      <div class="left-label" id="formTitle">New appointment</div>
+      <div class="type-chips" id="typeChips" role="group" aria-label="Type"></div>
+      <input id="apTitle" type="text" placeholder="What is it? Like 'Dentist cleaning'" maxlength="60" autocomplete="off" aria-label="Title">
+      <div class="form-row">
+        <input id="apDate" type="date" aria-label="Date">
+        <input id="apTime" type="time" aria-label="Time (optional)">
+      </div>
+      <input id="apPlace" type="text" placeholder="Where? (optional)" maxlength="80" autocomplete="off" aria-label="Where">
+      <div class="form-row">
+        <select id="apRepeat" aria-label="Repeats">
+          <option value="none">Doesn't repeat</option>
+          <option value="w1">Every week</option>
+          <option value="w2">Every 2 weeks</option>
+          <option value="m1">Every month</option>
+          <option value="m3">Every 3 months</option>
+          <option value="m6">Every 6 months</option>
+          <option value="m12">Every year</option>
+        </select>
+      </div>
+      <textarea id="apNotes" placeholder="Notes, like 'Bring health card' (optional)" maxlength="300" aria-label="Notes"></textarea>
+      <div class="cal-actions">
+        <button class="add" type="submit" id="apSave">Save appointment</button>
+        <button class="ghost" type="button" id="apCancel">Cancel</button>
+        <button class="ghost" type="button" id="apIcs" hidden>Add to phone calendar</button>
+        <button class="link danger" type="button" id="apDelete" hidden>Delete</button>
+      </div>
+      <span class="bud-msg" id="apMsg" hidden></span>
+    </form>
+
+    <div class="bud-card">
+      <div class="left-label">Coming up</div>
+      <ul id="upList"></ul>
+      <span class="bud-msg" id="upEmpty">No upcoming appointments in the next 60 days.</span>
+    </div>
+  </div>
+
   <div class="install" id="install">
     <div class="install-top">
       <div><h2>Add it to your phone or computer</h2><p>Open it like an app, straight from your home screen.</p></div>
@@ -454,6 +538,7 @@ function load(){
   }
   if(!s.history||typeof s.history!=='object') s.history={};
   if(!Array.isArray(s.groc)) s.groc=[];
+  if(!Array.isArray(s.cal)) s.cal=[];
   if(!s.budget||typeof s.budget!=='object') s.budget={amount:0,exp:[]};
   ['exp','bills','goals'].forEach(k=>{if(!Array.isArray(s.budget[k])) s.budget[k]=[]});
   if(!s.budget.limits||typeof s.budget.limits!=='object') s.budget.limits={};
@@ -853,14 +938,138 @@ document.getElementById('budSetForm').addEventListener('submit',e=>{
   B().amount=v; save(); f.dataset.open=''; f.hidden=true; renderBudget();
 });
 
-// ---- Switch between Tasks, Groceries and Budget ----
-const VIEWS={tasks:['viewTasks','tabTasks'],groceries:['viewGroc','tabGroc'],budget:['viewBud','tabBud']};
+// ---- Calendar ----
+const ATYPES=[['Doctor','#d9534f'],['Dentist','#1fa2a6'],['Car','#3b7dd8'],['Eye doctor','#8a5cd6'],['Haircut','#e08a1e'],['Work','#6b7d78'],['Pet','#a0662f'],['Other','#c24f9a']];
+const tcolor=t=>(ATYPES.find(x=>x[0]===t)||ATYPES[ATYPES.length-1])[1];
+let calMonth=today().slice(0,7), calSel=today(), apType='Doctor', editId=null;
+const pd=n=>String(n).padStart(2,'0');
+const toDate=k=>{const [y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d)};
+const timeLabel=t=>{if(!t)return 'Any time';const [h,m]=t.split(':').map(Number);return new Date(2000,0,1,h,m).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'})};
+const repLabel={none:'',w1:'Every week',w2:'Every 2 weeks',m1:'Every month',m3:'Every 3 months',m6:'Every 6 months',m12:'Every year'};
+function occursOn(a,k){
+  if(k<a.date) return false; if(a.repeat==='none'||!a.repeat) return k===a.date;
+  const s=toDate(a.date), d=toDate(k);
+  if(a.repeat[0]==='w'){const n=+a.repeat.slice(1);const diff=Math.round((d-s)/864e5);return diff%(7*n)===0}
+  const n=+a.repeat.slice(1), months=(d.getFullYear()-s.getFullYear())*12+d.getMonth()-s.getMonth();
+  if(months%n) return false;
+  const want=Math.min(s.getDate(),new Date(d.getFullYear(),d.getMonth()+1,0).getDate());
+  return d.getDate()===want;
+}
+const apptsOn=k=>S.cal.filter(a=>occursOn(a,k)).sort((x,y)=>(x.time||'99').localeCompare(y.time||'99'));
+function apptRow(a,k,showDate,clickable){
+  const li=document.createElement('li'); li.className='appt'; if(!clickable) li.style.cursor='default';
+  const inner=clickable?document.createElement('button'):document.createElement('div');
+  if(clickable){inner.type='button';inner.className='appt-btn';inner.onclick=()=>openForm(a.id)} else inner.className='appt-btn';
+  inner.innerHTML='<span class="appt-bar"></span><span class="when"></span><span class="what"><b></b><span></span></span>';
+  inner.querySelector('.appt-bar').style.background=tcolor(a.type);
+  const w=inner.querySelector('.when');
+  if(showDate){const d=toDate(k);w.textContent=k===today()?'Today':d.toLocaleDateString(undefined,{month:'short',day:'numeric'});const sm=document.createElement('small');sm.textContent=a.time?timeLabel(a.time):d.toLocaleDateString(undefined,{weekday:'short'});w.appendChild(sm)}
+  else w.textContent=timeLabel(a.time);
+  inner.querySelector('b').textContent=a.title;
+  inner.querySelector('.what span').textContent=[a.type,a.place,repLabel[a.repeat]].filter(Boolean).join(' · ');
+  li.appendChild(inner); return li;
+}
+function renderCal(){
+  const [y,m]=calMonth.split('-').map(Number);
+  document.getElementById('cName').textContent=new Date(y,m-1,1).toLocaleDateString(undefined,{month:'long',year:'numeric'});
+  const g=document.getElementById('calGrid'); g.innerHTML='';
+  ['M','T','W','T','F','S','S'].forEach(x=>{const h=document.createElement('div');h.className='cal-dow';h.textContent=x;g.appendChild(h)});
+  const first=new Date(y,m-1,1), start=new Date(first); start.setDate(1-((first.getDay()+6)%7));
+  const weeks=Math.ceil((((first.getDay()+6)%7)+new Date(y,m,0).getDate())/7);
+  for(let i=0;i<weeks*7;i++){
+    const d=new Date(start); d.setDate(start.getDate()+i); const k=dkey(d), list=apptsOn(k);
+    const b=document.createElement('button'); b.type='button'; b.className='cal-day'+(d.getMonth()!==m-1?' out':'')+(k===today()?' today':'');
+    b.setAttribute('aria-pressed',k===calSel);
+    b.setAttribute('aria-label',d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})+(list.length?', '+list.length+' appointment'+(list.length>1?'s':''):''));
+    b.innerHTML='<span></span><span class="cal-dots"></span>'; b.firstChild.textContent=d.getDate();
+    list.slice(0,4).forEach(a=>{const i2=document.createElement('i');i2.style.background=tcolor(a.type);b.lastChild.appendChild(i2)});
+    b.onclick=()=>{calSel=k; if(k.slice(0,7)!==calMonth) calMonth=k.slice(0,7); renderCal()};
+    g.appendChild(b);
+  }
+  const sd=toDate(calSel);
+  document.getElementById('dayTitle').textContent=(calSel===today()?'Today · ':'')+sd.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
+  const dl=document.getElementById('dayList'); dl.innerHTML=''; const dlist=apptsOn(calSel);
+  dlist.forEach(a=>dl.appendChild(apptRow(a,calSel,false,true)));
+  dl.hidden=!dlist.length; document.getElementById('dayEmpty').hidden=!!dlist.length;
+  // upcoming
+  const ul=document.getElementById('upList'); ul.innerHTML=''; let n=0;
+  for(let i=0;i<60&&n<12;i++){const d=new Date();d.setDate(d.getDate()+i);const k=dkey(d);apptsOn(k).forEach(a=>{if(n<12){ul.appendChild(apptRow(a,k,true,true));n++}})}
+  ul.hidden=!n; document.getElementById('upEmpty').hidden=!!n;
+  renderBanner();
+}
+function renderBanner(){
+  const el=document.getElementById('apptBanner'); el.innerHTML='';
+  const t=today(), tm=new Date(); tm.setDate(tm.getDate()+1); const tk=dkey(tm);
+  const items=[...apptsOn(t).map(a=>[a,t]),...apptsOn(tk).map(a=>[a,tk])];
+  if(!items.length){el.hidden=true;return}
+  const h=document.createElement('div');h.className='left-label';h.textContent='Coming up today and tomorrow';el.appendChild(h);
+  const ul=document.createElement('ul');ul.style.border='0';ul.style.background='none';
+  items.forEach(([a,k])=>{const r=apptRow(a,k,true,false);r.style.borderTop='0';ul.appendChild(r)});
+  el.appendChild(ul); el.hidden=false;
+}
+function renderTypeChips(){
+  const w=document.getElementById('typeChips'); w.innerHTML='';
+  ATYPES.forEach(([t,c])=>{const b=document.createElement('button');b.type='button';b.innerHTML='<i></i><span></span>';b.firstChild.style.background=c;b.lastChild.textContent=t;b.setAttribute('aria-pressed',t===apType);b.onclick=()=>{apType=t;renderTypeChips()};w.appendChild(b)});
+}
+function openForm(id){
+  editId=id||null; const a=id?S.cal.find(x=>x.id===id):null, f=document.getElementById('apptForm');
+  apType=a?a.type:'Doctor'; renderTypeChips();
+  document.getElementById('formTitle').textContent=a?'Edit appointment':'New appointment';
+  document.getElementById('apTitle').value=a?a.title:'';
+  document.getElementById('apDate').value=a?a.date:calSel;
+  document.getElementById('apTime').value=a?(a.time||''):'';
+  document.getElementById('apPlace').value=a?(a.place||''):'';
+  document.getElementById('apRepeat').value=a?(a.repeat||'none'):'none';
+  document.getElementById('apNotes').value=a?(a.notes||''):'';
+  document.getElementById('apDelete').hidden=!a;
+  document.getElementById('apIcs').hidden=!a||!/github\.io$/.test(location.hostname);
+  document.getElementById('apMsg').hidden=true;
+  f.hidden=false; f.scrollIntoView({behavior:'smooth',block:'start'}); document.getElementById('apTitle').focus({preventScroll:true});
+}
+function closeForm(){document.getElementById('apptForm').hidden=true;editId=null}
+document.getElementById('addApptBtn').onclick=()=>openForm(null);
+document.getElementById('apCancel').onclick=closeForm;
+document.getElementById('apDelete').onclick=function(){
+  if(this.dataset.confirm!=='1'){this.dataset.confirm='1';this.textContent='Tap again to delete';setTimeout(()=>{this.dataset.confirm='';this.textContent='Delete'},3000);return}
+  this.dataset.confirm='';this.textContent='Delete';S.cal=S.cal.filter(x=>x.id!==editId);save();closeForm();renderCal();
+};
+document.getElementById('apptForm').addEventListener('submit',e=>{
+  e.preventDefault(); const msg=document.getElementById('apMsg'), title=document.getElementById('apTitle').value.trim(), date=document.getElementById('apDate').value;
+  msg.hidden=false;
+  if(!title){msg.textContent='Add a name for the appointment, like "Dentist".';document.getElementById('apTitle').focus();return}
+  if(!date){msg.textContent='Pick a date.';return}
+  const data={title,type:apType,date,time:document.getElementById('apTime').value,place:document.getElementById('apPlace').value.trim(),repeat:document.getElementById('apRepeat').value,notes:document.getElementById('apNotes').value.trim()};
+  if(editId){Object.assign(S.cal.find(x=>x.id===editId),data)} else S.cal.push({id:uid(),...data});
+  save(); calSel=date; calMonth=date.slice(0,7); closeForm(); renderCal();
+});
+document.getElementById('apIcs').onclick=()=>{
+  const a=S.cal.find(x=>x.id===editId); if(!a) return;
+  const esc=t=>String(t||'').replace(/[\;,]/g,m=>'\\'+m).replace(/\n/g,'\\n');
+  const d=a.date.replace(/-/g,''); let dt;
+  if(a.time){const [h,mi]=a.time.split(':').map(Number);const end=new Date(toDate(a.date));end.setHours(h+1,mi);dt='DTSTART:'+d+'T'+a.time.replace(':','')+'00\r\nDTEND:'+dkey(end).replace(/-/g,'')+'T'+pd(end.getHours())+pd(end.getMinutes())+'00'}
+  else{const nx=toDate(a.date);nx.setDate(nx.getDate()+1);dt='DTSTART;VALUE=DATE:'+d+'\r\nDTEND;VALUE=DATE:'+dkey(nx).replace(/-/g,'')}
+  const rr={w1:'FREQ=WEEKLY',w2:'FREQ=WEEKLY;INTERVAL=2',m1:'FREQ=MONTHLY',m3:'FREQ=MONTHLY;INTERVAL=3',m6:'FREQ=MONTHLY;INTERVAL=6',m12:'FREQ=YEARLY'}[a.repeat];
+  const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Daily Checklist//EN','BEGIN:VEVENT','UID:'+a.id+'@daily-checklist',
+    'DTSTAMP:'+new Date().toISOString().replace(/[-:]/g,'').slice(0,15)+'Z',dt,'SUMMARY:'+esc(a.title),a.place?'LOCATION:'+esc(a.place):'',a.notes?'DESCRIPTION:'+esc(a.notes):'',rr?'RRULE:'+rr:'',
+    'BEGIN:VALARM','TRIGGER:-P1D','ACTION:DISPLAY','DESCRIPTION:'+esc(a.title),'END:VALARM','END:VEVENT','END:VCALENDAR'].filter(Boolean).join('\r\n');
+  const url=URL.createObjectURL(new Blob([ics],{type:'text/calendar'})), l=document.createElement('a');
+  l.href=url; l.download=a.title.replace(/[^\w ]+/g,'').trim()||'appointment'; l.download+='.ics'; document.body.appendChild(l); l.click(); l.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),5000);
+  const msg=document.getElementById('apMsg'); msg.hidden=false; msg.textContent='Opening it in your calendar app. It includes a reminder the day before.';
+};
+document.getElementById('cPrev').onclick=()=>{calMonth=shiftMonth(calMonth,-1);renderCal()};
+document.getElementById('cNext').onclick=()=>{calMonth=shiftMonth(calMonth,1);renderCal()};
+document.getElementById('cToday').onclick=()=>{calSel=today();calMonth=calSel.slice(0,7);renderCal()};
+renderBanner();
+
+// ---- Switch between Tasks, Groceries, Budget and Calendar ----
+const VIEWS={tasks:['viewTasks','tabTasks'],groceries:['viewGroc','tabGroc'],budget:['viewBud','tabBud'],calendar:['viewCal','tabCal']};
 function showView(v){
   if(!VIEWS[v]) v='tasks';
   Object.entries(VIEWS).forEach(([k,[vid,tid]])=>{document.getElementById(vid).hidden=k!==v;document.getElementById(tid).setAttribute('aria-selected',k===v)});
-  if(v==='budget') renderBudget();
+  if(v==='budget') renderBudget(); if(v==='calendar') renderCal();
 }
-const hashView=()=>({'#groceries':'groceries','#budget':'budget'})[location.hash]||'tasks';
+const hashView=()=>({'#groceries':'groceries','#budget':'budget','#calendar':'calendar'})[location.hash]||'tasks';
 document.querySelectorAll('.views [data-view]').forEach(b=>b.onclick=()=>{
   const v=b.dataset.view; showView(v);
   try{history.replaceState(null,'',v==='tasks'?location.pathname+location.search:'#'+v)}catch(e){location.hash=v==='tasks'?'':v}
