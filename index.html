@@ -149,38 +149,64 @@ input{flex:1 1 220px;min-width:0}
 .month span{font-weight:700;min-width:9.5em;text-align:center}
 .month button{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:20px;cursor:pointer}
 .month button:disabled{opacity:.35;cursor:default}
+.subnav{overflow-x:auto}
+.subnav button{flex:1 0 auto;white-space:nowrap}
 .bud-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.card-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
 .left-label{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
 .left-amt{font-family:var(--display);font-weight:800;font-size:clamp(34px,10vw,44px);line-height:1}
 .left-amt.over{color:var(--over)}
 .meter{height:14px;border-radius:999px;background:var(--bg);overflow:hidden;border:1px solid var(--line)}
 .meter i{display:block;height:100%;background:var(--done);border-radius:999px;transition:width .3s}
-.meter i.warn{background:var(--accent)} .meter i.over{background:var(--over)}
+.meter i.warn,.cat-row .bar i.warn{background:var(--accent)} .meter i.over,.cat-row .bar i.over{background:var(--over)}
 .bud-line{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:15px}
-.bud-line .muted{color:var(--muted)}
+.muted{color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stat{background:var(--bg);border-radius:10px;padding:10px;min-width:0}
+.stat span{display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.stat b{display:block;font-family:var(--display);font-size:clamp(16px,4.6vw,21px);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.pos{color:var(--done)} .neg{color:var(--over)}
 .bud-set{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .bud-set label{font-weight:700;width:100%}
-.bud-set input{flex:1 1 140px;min-width:0}
 .amt-wrap{position:relative;flex:0 1 130px;min-width:0;display:flex}
 .amt-wrap::before{content:"$";position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:700;pointer-events:none}
 .amt-wrap input{width:100%;padding-left:26px}
-.exp-form{display:grid;grid-template-columns:minmax(0,130px) minmax(0,1fr);gap:8px}
-.exp-form .wide{grid-column:1/-1}
-.exp-form select{min-width:0}
-.exp-form .add{grid-column:1/-1}
-@media (min-width:480px){.exp-form{grid-template-columns:minmax(0,120px) minmax(0,1fr) minmax(0,150px) auto}.exp-form .wide,.exp-form .add{grid-column:auto}}
-.cat-rows{display:flex;flex-direction:column;gap:10px}
-.cat-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;font-size:15px}
+.grid-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.grid-form .full{grid-column:1/-1}
+.grid-form input,.grid-form select{min-width:0;width:100%}
+.grid-form .amt-wrap{flex:none}
+.cat-rows{display:flex;flex-direction:column;gap:12px}
+.cat-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;font-size:15px;align-items:center}
 .cat-row .bar{grid-column:1/-1;height:8px;border-radius:999px;background:var(--bg);overflow:hidden}
 .cat-row .bar i{display:block;height:100%;background:var(--done);border-radius:999px}
-.exp-day{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:14px 0 6px}
+.cat-row .sub{grid-column:1/-1;font-size:13px;color:var(--muted)}
+.lim-edit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,130px);gap:8px;align-items:center}
+.chart svg{width:100%;height:auto;display:block}
+.chart text{fill:var(--muted);font-size:11px;font-family:var(--body)}
+.exp-day{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:14px 0 6px;display:flex;justify-content:space-between}
 .exp-day:first-child{margin-top:0}
 .exp{display:flex;align-items:center;gap:12px;padding:10px 4px 10px 16px}
 .exp .what{flex:1;min-width:0}
 .exp .what b{display:block;font-weight:700;overflow-wrap:anywhere}
 .exp .what span{font-size:13px;color:var(--muted)}
 .exp .amt{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.exp .amt.in{color:var(--done)}
+.pill{flex:none;font-size:12px;font-weight:700;border-radius:999px;padding:3px 9px;white-space:nowrap;border:1px solid var(--line);color:var(--muted);background:var(--bg)}
+.pill.ok{color:var(--done);border-color:var(--done)} .pill.soon{color:var(--accent-ink);background:var(--accent);border-color:var(--accent)} .pill.late{color:var(--surface);background:var(--over);border-color:var(--over)}
+.paybtn{flex:none;font:inherit;font-size:14px;font-weight:700;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;white-space:nowrap}
+.paybtn[aria-pressed="true"]{background:var(--done);border-color:var(--done);color:var(--check)}
+.goal{display:flex;flex-direction:column;gap:10px}
+.goal-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.goal-top b{font-family:var(--display);font-size:18px;overflow-wrap:anywhere;min-width:0}
+.goal-add{display:flex;flex-wrap:wrap;gap:8px}
+.goal-add .amt-wrap{flex:1 1 120px}
+.goal-add button{font:inherit;font-weight:700;border-radius:12px;padding:10px 14px;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.goal-add button.add{border:0;background:var(--accent);color:var(--accent-ink)}
+.filters{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+.filters button{flex:none;font:inherit;font-size:14px;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
 .bud-msg{font-size:14px;color:var(--muted)}
+.sublist{display:flex;flex-direction:column;gap:8px}
 .cheer{text-align:center;font-family:var(--display);font-weight:600;font-size:18px;padding:14px;border-radius:14px;background:var(--surface);border:2px dashed var(--done);color:var(--done)}
 .foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
 .link{background:none;border:0;color:var(--muted);font:inherit;text-decoration:underline;cursor:pointer;padding:0}
@@ -258,39 +284,101 @@ input{flex:1 1 220px;min-width:0}
       <h2>Budget</h2>
       <div class="month"><button type="button" id="mPrev" aria-label="Previous month">&lsaquo;</button><span id="mName"></span><button type="button" id="mNext" aria-label="Next month">&rsaquo;</button></div>
     </div>
-
-    <div class="bud-card" id="budSummary">
-      <div><div class="left-label" id="leftLabel">Left to spend</div><div class="left-amt money" id="leftAmt">$0.00</div></div>
-      <div class="meter" aria-hidden="true"><i id="meterFill" style="width:0%"></i></div>
-      <div class="bud-line"><span id="spentLine"></span><span class="muted" id="perDay"></span></div>
-      <div class="bud-line"><button class="link" id="budEditBtn" type="button">Change monthly budget</button></div>
+    <div class="seg subnav" id="budNav" role="group" aria-label="Budget sections">
+      <button type="button" data-sub="overview">Overview</button>
+      <button type="button" data-sub="spending">Spending</button>
+      <button type="button" data-sub="bills">Bills</button>
+      <button type="button" data-sub="goals">Goals</button>
     </div>
 
-    <form class="bud-card bud-set" id="budSetForm" hidden>
-      <label for="budAmt">How much can you spend each month?</label>
-      <div class="amt-wrap"><input id="budAmt" type="text" inputmode="decimal" placeholder="1500" autocomplete="off"></div>
-      <button class="add" type="submit">Save budget</button>
-      <span class="bud-msg" id="budSetMsg">The same amount is used every month. You can change it any time.</span>
-    </form>
-
-    <div class="bud-card">
-      <div class="left-label">Add spending</div>
-      <form class="exp-form" id="expForm">
-        <div class="amt-wrap" style="flex:none"><input id="expAmt" type="text" inputmode="decimal" placeholder="0.00" autocomplete="off" aria-label="Amount"></div>
-        <input id="expNote" type="text" placeholder="What was it for?" maxlength="60" autocomplete="off" aria-label="What it was for">
-        <select id="expCat" class="wide" aria-label="Category"></select>
-        <button class="add" type="submit">Add</button>
+    <!-- OVERVIEW -->
+    <div class="view" data-subview="overview">
+      <form class="bud-card bud-set" id="budSetForm" hidden>
+        <label for="budAmt">How much can you spend each month?</label>
+        <div class="amt-wrap"><input id="budAmt" type="text" inputmode="decimal" placeholder="1500" autocomplete="off"></div>
+        <button class="add" type="submit">Save budget</button>
+        <span class="bud-msg" id="budSetMsg">The same amount is used every month. Bills you mark as paid count toward it.</span>
       </form>
-      <span class="bud-msg" id="expMsg" hidden></span>
+      <div class="bud-card" id="budSummary">
+        <div><div class="left-label" id="leftLabel">Left to spend</div><div class="left-amt money" id="leftAmt">$0.00</div></div>
+        <div class="meter" aria-hidden="true"><i id="meterFill" style="width:0%"></i></div>
+        <div class="bud-line"><span id="spentLine"></span><span class="muted" id="perDay"></span></div>
+        <div class="bud-line"><span class="muted" id="billsAhead"></span><button class="link" id="budEditBtn" type="button">Change monthly budget</button></div>
+      </div>
+      <div class="bud-card">
+        <div class="left-label">Money in and out</div>
+        <div class="stats">
+          <div class="stat"><span>In</span><b class="pos" id="stIn">$0</b></div>
+          <div class="stat"><span>Out</span><b id="stOut">$0</b></div>
+          <div class="stat"><span id="stNetL">Saved</span><b id="stNet">$0</b></div>
+        </div>
+        <span class="bud-msg" id="inHint"></span>
+      </div>
+      <div class="bud-card">
+        <div class="card-top"><div class="left-label">Category limits</div><button class="link" id="limEditBtn" type="button">Set limits</button></div>
+        <div class="cat-rows" id="catRows"></div>
+        <form id="limForm" class="sublist" hidden></form>
+      </div>
+      <div class="bud-card">
+        <div class="card-top"><div class="left-label">Last 6 months</div><span class="bud-msg">Spending vs. budget</span></div>
+        <div class="chart" id="trend"></div>
+      </div>
     </div>
 
-    <div class="bud-card" id="catCard" hidden>
-      <div class="left-label">Where it went</div>
-      <div class="cat-rows" id="catRows"></div>
+    <!-- SPENDING -->
+    <div class="view" data-subview="spending" hidden>
+      <div class="bud-card">
+        <div class="seg" id="kindSeg" role="group" aria-label="Type"><button type="button" data-kind="out">I spent money</button><button type="button" data-kind="in">I got paid</button></div>
+        <form class="grid-form" id="expForm">
+          <div class="amt-wrap"><input id="expAmt" type="text" inputmode="decimal" placeholder="0.00" autocomplete="off" aria-label="Amount"></div>
+          <input id="expDate" type="date" aria-label="Date">
+          <input id="expNote" class="full" type="text" placeholder="What was it for?" maxlength="60" autocomplete="off" aria-label="Description">
+          <select id="expCat" class="full" aria-label="Category"></select>
+          <button class="add full" type="submit" id="expSubmit">Add spending</button>
+        </form>
+        <span class="bud-msg" id="expMsg" hidden></span>
+      </div>
+      <div class="filters" id="expFilters" role="group" aria-label="Show"></div>
+      <div id="expWrap"></div>
+      <div class="empty" id="expEmpty"><b>Nothing added this month</b>Add spending or a paycheque above and it'll show up here.</div>
     </div>
 
-    <div id="expWrap"></div>
-    <div class="empty" id="expEmpty"><b>Nothing spent yet this month</b>Add what you spend above and it'll show up here.</div>
+    <!-- BILLS -->
+    <div class="view" data-subview="bills" hidden>
+      <div class="bud-card">
+        <div class="card-top"><div class="left-label">Monthly bills</div><span class="money" id="billTotal"></span></div>
+        <div class="meter" aria-hidden="true"><i id="billMeter" style="width:0%"></i></div>
+        <span class="bud-msg" id="billSum"></span>
+      </div>
+      <ul id="billList"></ul>
+      <div class="empty" id="billEmpty"><b>No bills yet</b>Add rent, your phone, subscriptions and anything else you pay every month.</div>
+      <div class="bud-card">
+        <div class="left-label">Add a bill</div>
+        <form class="grid-form" id="billForm">
+          <input id="billName" class="full" type="text" placeholder="Bill name, like 'Phone'" maxlength="40" autocomplete="off" aria-label="Bill name">
+          <div class="amt-wrap"><input id="billAmt" type="text" inputmode="decimal" placeholder="0.00" autocomplete="off" aria-label="Amount"></div>
+          <input id="billDay" type="number" min="1" max="31" placeholder="Due day (1–31)" aria-label="Day of the month it's due">
+          <select id="billCat" class="full" aria-label="Category"></select>
+          <button class="add full" type="submit">Add bill</button>
+        </form>
+        <span class="bud-msg" id="billMsg" hidden></span>
+      </div>
+    </div>
+
+    <!-- GOALS -->
+    <div class="view" data-subview="goals" hidden>
+      <div class="sublist" id="goalList"></div>
+      <div class="empty" id="goalEmpty"><b>No savings goals yet</b>Saving for a trip, a new phone or a rainy-day fund? Add it below.</div>
+      <div class="bud-card">
+        <div class="left-label">New savings goal</div>
+        <form class="grid-form" id="goalForm">
+          <input id="goalName" class="full" type="text" placeholder="What are you saving for?" maxlength="40" autocomplete="off" aria-label="Goal name">
+          <div class="amt-wrap full"><input id="goalTarget" type="text" inputmode="decimal" placeholder="Goal amount" autocomplete="off" aria-label="Goal amount"></div>
+          <button class="add full" type="submit">Add goal</button>
+        </form>
+        <span class="bud-msg" id="goalMsg" hidden></span>
+      </div>
+    </div>
   </div>
 
   <div class="install" id="install">
@@ -367,7 +455,8 @@ function load(){
   if(!s.history||typeof s.history!=='object') s.history={};
   if(!Array.isArray(s.groc)) s.groc=[];
   if(!s.budget||typeof s.budget!=='object') s.budget={amount:0,exp:[]};
-  if(!Array.isArray(s.budget.exp)) s.budget.exp=[];
+  ['exp','bills','goals'].forEach(k=>{if(!Array.isArray(s.budget[k])) s.budget[k]=[]});
+  if(!s.budget.limits||typeof s.budget.limits!=='object') s.budget.limits={};
   return s;
 }
 let S=load();
@@ -547,23 +636,29 @@ document.getElementById('groCopy').onclick=function(){
   try{navigator.clipboard.writeText(txt).then(()=>flash('Copied! Paste it in a text.'),()=>flash("Couldn't copy on this device"))}catch(e){flash("Couldn't copy on this device")}
 };
 // ---- Budget ----
-const BCATS=['Groceries','Eating out','Gas & transport','Rent & bills','Phone & internet','Fun','Shopping','Health','Other'];
+const BCATS=['Groceries','Eating out','Gas & transport','Rent & housing','Utilities','Phone & internet','Subscriptions','Fun','Shopping','Health','Personal care','Gifts','Other'];
+const ICATS=['Paycheque','Side job','Gift','Refund','Other income'];
 const fmt=n=>(n<0?'-':'')+'$'+Math.abs(n).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmt0=n=>(n<0?'-':'')+'$'+Math.abs(n).toLocaleString(undefined,{maximumFractionDigits:0});
 const parseAmt=v=>{const n=parseFloat(String(v).replace(/[$,\s]/g,''));return isFinite(n)?Math.round(n*100)/100:NaN};
-let viewMonth=today().slice(0,7);
-const expSel=document.getElementById('expCat');
-BCATS.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;expSel.appendChild(o)});
-function monthLabel(m){const [y,mo]=m.split('-').map(Number);return new Date(y,mo-1,1).toLocaleDateString(undefined,{month:'long',year:'numeric'})}
+const ord=n=>n+(n%10===1&&n!==11?'st':n%10===2&&n!==12?'nd':n%10===3&&n!==13?'rd':'th');
+const B=()=>S.budget;
+let viewMonth=today().slice(0,7), budSub='overview', expKind='out', expFilter='All';
+function monthLabel(m,short){const [y,mo]=m.split('-').map(Number);return new Date(y,mo-1,1).toLocaleDateString(undefined,short?{month:'short'}:{month:'long',year:'numeric'})}
 function shiftMonth(m,d){const [y,mo]=m.split('-').map(Number);const t=new Date(y,mo-1+d,1);return t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')}
-function renderBudget(){
-  const B=S.budget, cur=today().slice(0,7), isCur=viewMonth===cur;
-  document.getElementById('mName').textContent=monthLabel(viewMonth);
-  document.getElementById('mNext').disabled=viewMonth>=cur;
-  const list=B.exp.filter(e=>e.date.slice(0,7)===viewMonth).sort((a,b)=>b.date.localeCompare(a.date)||b.t-a.t);
-  const spent=list.reduce((a,e)=>a+e.amt,0), budget=B.amount||0, left=budget-spent;
-  const summary=document.getElementById('budSummary'), setF=document.getElementById('budSetForm');
-  if(!budget){summary.hidden=true;setF.hidden=false}
-  summary.hidden=!budget;
+const daysIn=m=>new Date(+m.slice(0,4),+m.slice(5,7),0).getDate();
+const kindOf=e=>e.kind==='in'?'in':'out';
+const monthExp=m=>B().exp.filter(e=>e.date.slice(0,7)===m);
+const spentIn=m=>monthExp(m).filter(e=>kindOf(e)==='out').reduce((a,e)=>a+e.amt,0);
+function fillSelect(sel,list){sel.innerHTML='';list.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o)})}
+fillSelect(document.getElementById('billCat'),BCATS); document.getElementById('billCat').value='Utilities';
+
+function renderOverview(){
+  const b=B(), cur=today().slice(0,7), isCur=viewMonth===cur, list=monthExp(viewMonth);
+  const out=list.filter(e=>kindOf(e)==='out'), inc=list.filter(e=>kindOf(e)==='in');
+  const spent=out.reduce((a,e)=>a+e.amt,0), income=inc.reduce((a,e)=>a+e.amt,0), budget=b.amount||0, left=budget-spent;
+  document.getElementById('budSetForm').hidden=!!budget&&document.getElementById('budSetForm').dataset.open!=='1';
+  document.getElementById('budSummary').hidden=!budget;
   if(budget){
     const la=document.getElementById('leftAmt');
     document.getElementById('leftLabel').textContent=left<0?'Over budget by':(isCur?'Left to spend':'Left over');
@@ -572,46 +667,190 @@ function renderBudget(){
     f.style.width=pct+'%'; f.className=left<0?'over':(pct>=80?'warn':'');
     document.getElementById('spentLine').textContent='Spent '+fmt(spent)+' of '+fmt(budget);
     let pd='';
-    if(isCur&&left>0){const d=new Date(),last=new Date(d.getFullYear(),d.getMonth()+1,0).getDate(),daysLeft=last-d.getDate()+1;pd='About '+fmt(left/daysLeft)+' a day for '+daysLeft+' more '+(daysLeft===1?'day':'days')}
+    if(isCur&&left>0){const d=new Date(),dl=daysIn(cur)-d.getDate()+1;pd='About '+fmt(left/dl)+' a day for '+dl+' more '+(dl===1?'day':'days')}
     document.getElementById('perDay').textContent=pd;
+    const unpaid=b.bills.filter(x=>!billPaid(x,viewMonth)).reduce((a,x)=>a+x.amt,0);
+    document.getElementById('billsAhead').textContent=unpaid?fmt(unpaid)+' in bills still to pay this month':'';
   }
-  // categories
-  const by={}; list.forEach(e=>by[e.cat]=(by[e.cat]||0)+e.amt);
-  const cats=Object.entries(by).sort((a,b)=>b[1]-a[1]), max=cats.length?cats[0][1]:1;
+  document.getElementById('stIn').textContent=fmt0(income);
+  document.getElementById('stOut').textContent=fmt0(spent);
+  const net=income-spent, nb=document.getElementById('stNet');
+  document.getElementById('stNetL').textContent=net<0?'Short':'Saved';
+  nb.textContent=fmt0(Math.abs(net)); nb.className=net<0?'neg':'pos';
+  document.getElementById('inHint').textContent=income?'':'Add your paycheques under Spending → "I got paid" to see what you saved.';
+  // category limits
+  const by={}; out.forEach(e=>by[e.cat]=(by[e.cat]||0)+e.amt);
+  const cats=BCATS.filter(c=>by[c]||b.limits[c]).sort((x,y)=>(by[y]||0)-(by[x]||0));
   const cr=document.getElementById('catRows'); cr.innerHTML='';
-  cats.forEach(([c,v])=>{const r=document.createElement('div');r.className='cat-row';r.innerHTML='<span></span><span class="money"></span><div class="bar"><i style="width:'+(v/max*100)+'%"></i></div>';r.children[0].textContent=c;r.children[1].textContent=fmt(v)+(spent?' · '+Math.round(v/spent*100)+'%':'');cr.appendChild(r)});
-  document.getElementById('catCard').hidden=!cats.length;
-  // list
+  const maxSpent=Math.max(1,...cats.map(c=>by[c]||0));
+  cats.forEach(c=>{
+    const v=by[c]||0, lim=b.limits[c], r=document.createElement('div'); r.className='cat-row';
+    const pct=lim?Math.min(100,v/lim*100):v/maxSpent*100, cls=lim?(v>lim?'over':v/lim>=.8?'warn':''):'';
+    r.innerHTML='<span></span><span class="money"></span><div class="bar"><i class="'+cls+'" style="width:'+pct+'%"></i></div><span class="sub"></span>';
+    r.children[0].textContent=c; r.children[1].textContent=lim?fmt0(v)+' of '+fmt0(lim):fmt0(v);
+    r.children[3].textContent=lim?(v>lim?fmt(v-lim)+' over the limit':fmt(lim-v)+' left'):(spent?Math.round(v/spent*100)+'% of spending':'');
+    cr.appendChild(r);
+  });
+  if(!cats.length){const n=document.createElement('span');n.className='bud-msg';n.textContent='Spending by category shows up here. Tap "Set limits" to cap things like eating out.';cr.appendChild(n)}
+  renderTrend();
+}
+function renderTrend(){
+  const months=[];for(let i=5;i>=0;i--) months.push(shiftMonth(viewMonth,-i));
+  const vals=months.map(spentIn), budget=B().amount||0, max=Math.max(budget,...vals,1)*1.1;
+  const W=320,H=150,pl=8,pr=8,pt=18,pb=22,cw=(W-pl-pr)/6,bw=cw*.56,y=v=>pt+(H-pt-pb)*(1-v/max);
+  let g='';
+  for(let k=0;k<=2;k++){const yy=pt+(H-pt-pb)*k/2;g+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+yy+'" y2="'+yy+'" stroke="var(--line)" stroke-width="1"/>'}
+  months.forEach((m,i)=>{const x=pl+cw*i+(cw-bw)/2,v=vals[i],top=y(v),over=budget&&v>budget,cur=m===viewMonth;
+    g+='<rect x="'+x+'" y="'+top+'" width="'+bw+'" height="'+Math.max(0,H-pb-top)+'" rx="4" fill="'+(over?'var(--over)':'var(--done)')+'" opacity="'+(cur?1:.55)+'"><title>'+monthLabel(m)+': '+fmt(v)+'</title></rect>';
+    if(v) g+='<text x="'+(x+bw/2)+'" y="'+(top-5)+'" text-anchor="middle">'+fmt0(v)+'</text>';
+    g+='<text x="'+(x+bw/2)+'" y="'+(H-6)+'" text-anchor="middle" style="'+(cur?'fill:var(--ink);font-weight:700':'')+'">'+monthLabel(m,true)+'</text>'});
+  if(budget){const by=y(budget);g+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+by+'" y2="'+by+'" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 4"/><text x="'+(W-pr)+'" y="'+(by-5)+'" text-anchor="end" style="fill:var(--ink)">Budget '+fmt0(budget)+'</text>'}
+  document.getElementById('trend').innerHTML='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Spending for the last six months">'+g+'</svg>';
+}
+document.getElementById('limEditBtn').onclick=()=>{
+  const f=document.getElementById('limForm'), open=f.hidden; f.hidden=!open;
+  document.getElementById('catRows').hidden=open;
+  document.getElementById('limEditBtn').textContent=open?'Cancel':'Set limits';
+  if(!open) return;
+  f.innerHTML='<span class="bud-msg">Set a monthly cap for any category. Leave blank for no limit.</span>';
+  BCATS.forEach((c,i)=>{const r=document.createElement('div');r.className='lim-edit';r.innerHTML='<label for="lim'+i+'"></label><div class="amt-wrap" style="flex:none"><input id="lim'+i+'" type="text" inputmode="decimal" placeholder="No limit" autocomplete="off"></div>';r.querySelector('label').textContent=c;r.querySelector('input').value=B().limits[c]||'';r.querySelector('input').dataset.cat=c;f.appendChild(r)});
+  const sb=document.createElement('button');sb.type='submit';sb.className='add';sb.textContent='Save limits';f.appendChild(sb);
+};
+document.getElementById('limForm').addEventListener('submit',e=>{
+  e.preventDefault(); const L={};
+  e.target.querySelectorAll('input[data-cat]').forEach(i=>{const v=parseAmt(i.value);if(v>0)L[i.dataset.cat]=v});
+  B().limits=L; save(); document.getElementById('limEditBtn').click(); renderBudget();
+});
+
+function renderSpending(){
+  document.querySelectorAll('#kindSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.kind===expKind));
+  const sel=document.getElementById('expCat'), keep=sel.value, list=expKind==='in'?ICATS:BCATS;
+  if(sel.dataset.kind!==expKind){fillSelect(sel,list);sel.dataset.kind=expKind} else if(list.includes(keep)) sel.value=keep;
+  document.getElementById('expSubmit').textContent=expKind==='in'?'Add money in':'Add spending';
+  document.getElementById('expNote').placeholder=expKind==='in'?'Where did it come from?':'What was it for?';
+  const di=document.getElementById('expDate'), cur=today().slice(0,7);
+  di.max=today(); di.min=viewMonth+'-01';
+  if(!di.value||di.value.slice(0,7)!==viewMonth) di.value=viewMonth===cur?today():viewMonth+'-'+String(daysIn(viewMonth)).padStart(2,'0');
+  const all=monthExp(viewMonth).sort((a,b)=>b.date.localeCompare(a.date)||(b.t||0)-(a.t||0));
+  const used=['All','Money in',...BCATS.filter(c=>all.some(e=>kindOf(e)==='out'&&e.cat===c))];
+  if(!used.includes(expFilter)) expFilter='All';
+  const fw=document.getElementById('expFilters'); fw.innerHTML=''; fw.hidden=all.length<2;
+  used.forEach(c=>{if(c==='Money in'&&!all.some(e=>kindOf(e)==='in'))return;const b=document.createElement('button');b.type='button';b.textContent=c;b.setAttribute('aria-pressed',c===expFilter);b.onclick=()=>{expFilter=c;renderSpending()};fw.appendChild(b)});
+  const list2=all.filter(e=>expFilter==='All'||(expFilter==='Money in'?kindOf(e)==='in':kindOf(e)==='out'&&e.cat===expFilter));
   const w=document.getElementById('expWrap'); w.innerHTML='';
-  let day=null, ul=null;
-  list.forEach(e=>{
-    if(e.date!==day){day=e.date;const [y,m,d]=day.split('-').map(Number);const h=document.createElement('div');h.className='exp-day';h.textContent=day===today()?'Today':new Date(y,m-1,d).toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'});w.appendChild(h);ul=document.createElement('ul');w.appendChild(ul)}
+  let day=null, ul=null, hd=null, dayTotal=0;
+  list2.forEach(e=>{
+    if(e.date!==day){day=e.date;dayTotal=0;const [y,m,d]=day.split('-').map(Number);hd=document.createElement('div');hd.className='exp-day';hd.innerHTML='<span></span><span class="money"></span>';hd.firstChild.textContent=day===today()?'Today':new Date(y,m-1,d).toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'});w.appendChild(hd);ul=document.createElement('ul');w.appendChild(ul)}
+    const isIn=kindOf(e)==='in'; if(!isIn){dayTotal+=e.amt;hd.lastChild.textContent=fmt(dayTotal)}
     const li=document.createElement('li');li.className='exp';
-    li.innerHTML='<div class="what"><b></b><span></span></div><span class="amt"></span><button class="del" type="button" aria-label="Remove this spending">×</button>';
-    li.querySelector('b').textContent=e.note||e.cat; li.querySelector('.what span').textContent=e.cat; li.querySelector('.amt').textContent=fmt(e.amt);
-    li.querySelector('.del').onclick=()=>{B.exp=B.exp.filter(x=>x.id!==e.id);save();renderBudget()};
+    li.innerHTML='<div class="what"><b></b><span></span></div><span class="amt'+(isIn?' in':'')+'"></span><button class="del" type="button" aria-label="Remove">×</button>';
+    li.querySelector('b').textContent=e.note||e.cat; li.querySelector('.what span').textContent=e.cat+(e.billId?' · bill':'');
+    li.querySelector('.amt').textContent=(isIn?'+':'')+fmt(e.amt);
+    li.querySelector('.del').onclick=()=>{B().exp=B().exp.filter(x=>x.id!==e.id);save();renderBudget()};
     ul.appendChild(li);
   });
-  const em=document.getElementById('expEmpty'); em.hidden=!!list.length;
-  em.querySelector('b').textContent=isCur?'Nothing spent yet this month':'Nothing was added for '+monthLabel(viewMonth);
+  const em=document.getElementById('expEmpty'); em.hidden=!!list2.length;
+  em.querySelector('b').textContent=all.length?'Nothing in this filter':(viewMonth===cur?'Nothing added this month':'Nothing was added for '+monthLabel(viewMonth));
 }
+document.querySelectorAll('#kindSeg button').forEach(b=>b.onclick=()=>{expKind=b.dataset.kind;renderSpending()});
+document.getElementById('expForm').addEventListener('submit',e=>{
+  e.preventDefault(); const ai=document.getElementById('expAmt'), ni=document.getElementById('expNote'), msg=document.getElementById('expMsg'), cat=document.getElementById('expCat').value;
+  const v=parseAmt(ai.value); msg.hidden=false;
+  if(!(v>0)){msg.textContent='Enter an amount, like 12.50.';ai.focus();return}
+  let date=document.getElementById('expDate').value||today(); if(date>today()) date=today();
+  B().exp.push({id:uid(),amt:v,note:ni.value.trim(),cat,date,t:Date.now(),kind:expKind});
+  ai.value='';ni.value='';
+  msg.textContent=(expKind==='in'?'Added '+fmt(v)+' coming in from '+cat:'Added '+fmt(v)+' for '+cat)+'.';
+  const lim=B().limits[cat]; if(expKind==='out'&&lim){const sp=monthExp(date.slice(0,7)).filter(x=>kindOf(x)==='out'&&x.cat===cat).reduce((a,x)=>a+x.amt,0);if(sp>lim) msg.textContent+=' Heads up: '+cat+' is '+fmt(sp-lim)+' over its limit.'; else if(sp/lim>=.8) msg.textContent+=' '+fmt(lim-sp)+' left for '+cat+' this month.'}
+  if(date.slice(0,7)!==viewMonth) viewMonth=date.slice(0,7);
+  save();renderBudget();ai.focus();
+});
+
+function billDate(bill,m){return m+'-'+String(Math.min(bill.day,daysIn(m))).padStart(2,'0')}
+function billPaid(bill,m){return B().exp.some(e=>e.billId===bill.id&&e.date.slice(0,7)===m)}
+function renderBills(){
+  const b=B(), m=viewMonth, ul=document.getElementById('billList'); ul.innerHTML='';
+  const bills=[...b.bills].sort((x,y)=>x.day-y.day), tot=bills.reduce((a,x)=>a+x.amt,0);
+  const paid=bills.filter(x=>billPaid(x,m)).reduce((a,x)=>a+x.amt,0);
+  document.getElementById('billTotal').textContent=fmt(tot)+' a month';
+  document.getElementById('billMeter').style.width=(tot?paid/tot*100:0)+'%';
+  document.getElementById('billSum').textContent=bills.length?fmt(paid)+' paid · '+fmt(tot-paid)+' left to pay in '+monthLabel(m):'Add your regular bills below.';
+  document.getElementById('billEmpty').hidden=!!bills.length; ul.hidden=!bills.length;
+  const t=today();
+  bills.forEach(x=>{
+    const isPaid=billPaid(x,m), due=billDate(x,m), li=document.createElement('li'); li.className='exp';
+    let pill='',pc='';
+    if(isPaid){pill='Paid';pc='ok'}
+    else if(due<t){pill='Overdue';pc='late'}
+    else{const [y,mo,d]=due.split('-').map(Number);const n=Math.round((new Date(y,mo-1,d)-new Date(t+'T00:00'))/864e5);pill=n===0?'Due today':n<=5?'Due in '+n+(n===1?' day':' days'):'Due the '+ord(Math.min(x.day,daysIn(m)));pc=n<=5?'soon':''}
+    li.innerHTML='<div class="what"><b></b><span></span></div><span class="pill '+pc+'"></span><button class="paybtn" type="button"></button><button class="del" type="button" aria-label="Delete bill">×</button>';
+    li.querySelector('b').textContent=x.name; li.querySelector('.what span').textContent=fmt(x.amt)+' · '+x.cat+' · due the '+ord(x.day);
+    li.querySelector('.pill').textContent=pill;
+    const pb=li.querySelector('.paybtn'); pb.textContent=isPaid?'Paid ✓':'Mark paid'; pb.setAttribute('aria-pressed',isPaid);
+    pb.onclick=()=>{
+      if(billPaid(x,m)) b.exp=b.exp.filter(e=>!(e.billId===x.id&&e.date.slice(0,7)===m));
+      else{let d=billDate(x,m); if(d>t) d=m===t.slice(0,7)?t:d; b.exp.push({id:uid(),amt:x.amt,note:x.name,cat:x.cat,date:d,t:Date.now(),kind:'out',billId:x.id})}
+      save();renderBudget();
+    };
+    li.querySelector('.del').onclick=()=>{b.bills=b.bills.filter(y=>y.id!==x.id);save();renderBudget()};
+    ul.appendChild(li);
+  });
+}
+document.getElementById('billForm').addEventListener('submit',e=>{
+  e.preventDefault(); const n=document.getElementById('billName'), a=document.getElementById('billAmt'), d=document.getElementById('billDay'), msg=document.getElementById('billMsg');
+  const v=parseAmt(a.value), day=parseInt(d.value,10); msg.hidden=false;
+  if(!n.value.trim()){msg.textContent='Give the bill a name, like "Phone".';n.focus();return}
+  if(!(v>0)){msg.textContent='Enter how much the bill is.';a.focus();return}
+  if(!(day>=1&&day<=31)){msg.textContent='Enter the day of the month it\'s due, from 1 to 31.';d.focus();return}
+  B().bills.push({id:uid(),name:n.value.trim(),amt:v,day,cat:document.getElementById('billCat').value});
+  msg.textContent='Added '+n.value.trim()+'. Tap "Mark paid" each month when you pay it.';
+  n.value='';a.value='';d.value=''; save();renderBudget();
+});
+
+function renderGoals(){
+  const g=B().goals, wrap=document.getElementById('goalList'); wrap.innerHTML='';
+  document.getElementById('goalEmpty').hidden=!!g.length;
+  g.forEach(x=>{
+    const pct=x.target?Math.min(100,x.saved/x.target*100):0, done=x.saved>=x.target;
+    const c=document.createElement('div'); c.className='bud-card goal';
+    c.innerHTML='<div class="goal-top"><b></b><button class="del" type="button" aria-label="Delete goal">×</button></div><div class="bud-line"><span class="money"></span><span class="muted"></span></div><div class="meter" aria-hidden="true"><i style="width:'+pct+'%"></i></div><form class="goal-add"><div class="amt-wrap"><input type="text" inputmode="decimal" placeholder="Amount" autocomplete="off" aria-label="Amount"></div><button type="submit" class="add">Add</button><button type="button" class="take">Take out</button></form>';
+    c.querySelector('b').textContent=(done?'🎉 ':'')+x.name;
+    c.querySelector('.bud-line .money').textContent=fmt(x.saved)+' of '+fmt(x.target);
+    c.querySelector('.bud-line .muted').textContent=done?'Goal reached!':fmt(x.target-x.saved)+' to go · '+Math.round(pct)+'%';
+    const inp=c.querySelector('input');
+    const move=sign=>{const v=parseAmt(inp.value);if(!(v>0)){inp.focus();return}x.saved=Math.max(0,Math.round((x.saved+sign*v)*100)/100);save();renderGoals()};
+    c.querySelector('form').addEventListener('submit',e=>{e.preventDefault();move(1)});
+    c.querySelector('.take').onclick=()=>move(-1);
+    c.querySelector('.del').onclick=()=>{B().goals=g.filter(y=>y.id!==x.id);save();renderGoals()};
+    wrap.appendChild(c);
+  });
+}
+document.getElementById('goalForm').addEventListener('submit',e=>{
+  e.preventDefault(); const n=document.getElementById('goalName'), t=document.getElementById('goalTarget'), msg=document.getElementById('goalMsg');
+  const v=parseAmt(t.value); msg.hidden=false;
+  if(!n.value.trim()){msg.textContent='Name the goal, like "New phone".';n.focus();return}
+  if(!(v>0)){msg.textContent='Enter how much you want to save.';t.focus();return}
+  B().goals.push({id:uid(),name:n.value.trim(),target:v,saved:0}); n.value='';t.value=''; msg.hidden=true; save();renderGoals();
+});
+
+function renderBudget(){
+  const cur=today().slice(0,7);
+  document.getElementById('mName').textContent=monthLabel(viewMonth);
+  document.getElementById('mNext').disabled=viewMonth>=cur;
+  const monthly=budSub!=='goals';
+  document.querySelector('#viewBud .month').style.visibility=monthly?'visible':'hidden';
+  document.querySelectorAll('#budNav button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.sub===budSub));
+  document.querySelectorAll('[data-subview]').forEach(v=>v.hidden=v.dataset.subview!==budSub);
+  ({overview:renderOverview,spending:renderSpending,bills:renderBills,goals:renderGoals})[budSub]();
+}
+document.querySelectorAll('#budNav button').forEach(b=>b.onclick=()=>{budSub=b.dataset.sub;renderBudget()});
 document.getElementById('mPrev').onclick=()=>{viewMonth=shiftMonth(viewMonth,-1);renderBudget()};
 document.getElementById('mNext').onclick=()=>{viewMonth=shiftMonth(viewMonth,1);renderBudget()};
-document.getElementById('budEditBtn').onclick=()=>{const f=document.getElementById('budSetForm');f.hidden=!f.hidden;if(!f.hidden){const i=document.getElementById('budAmt');i.value=S.budget.amount||'';i.focus()}};
+document.getElementById('budEditBtn').onclick=()=>{const f=document.getElementById('budSetForm');f.dataset.open=f.hidden?'1':'';f.hidden=!f.hidden;if(!f.hidden){const i=document.getElementById('budAmt');i.value=B().amount||'';i.focus()}};
 document.getElementById('budSetForm').addEventListener('submit',e=>{
-  e.preventDefault(); const v=parseAmt(document.getElementById('budAmt').value), m=document.getElementById('budSetMsg');
+  e.preventDefault(); const v=parseAmt(document.getElementById('budAmt').value), m=document.getElementById('budSetMsg'), f=document.getElementById('budSetForm');
   if(!(v>0)){m.textContent='Enter an amount above $0, like 1500.';return}
-  S.budget.amount=v; save(); m.textContent='The same amount is used every month. You can change it any time.';
-  document.getElementById('budSetForm').hidden=true; renderBudget();
-});
-document.getElementById('expForm').addEventListener('submit',e=>{
-  e.preventDefault(); const ai=document.getElementById('expAmt'), ni=document.getElementById('expNote'), msg=document.getElementById('expMsg');
-  const v=parseAmt(ai.value);
-  if(!(v>0)){msg.hidden=false;msg.textContent='Enter how much it cost, like 12.50.';ai.focus();return}
-  const cur=today().slice(0,7), date=viewMonth===cur?today():viewMonth+'-'+String(new Date(+viewMonth.slice(0,4),+viewMonth.slice(5,7),0).getDate()).padStart(2,'0');
-  S.budget.exp.push({id:uid(),amt:v,note:ni.value.trim(),cat:expSel.value,date,t:Date.now()});
-  ai.value='';ni.value='';msg.hidden=false;msg.textContent='Added '+fmt(v)+' for '+expSel.value+'.';
-  save();renderBudget();ai.focus();
+  B().amount=v; save(); f.dataset.open=''; f.hidden=true; renderBudget();
 });
 
 // ---- Switch between Tasks, Groceries and Budget ----
