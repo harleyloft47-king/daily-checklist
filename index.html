@@ -133,6 +133,9 @@ input{flex:1 1 220px;min-width:0}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chips button{font:inherit;font-size:14px;padding:7px 12px;border-radius:999px;border:1px dashed var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
 .chips button:hover{border-style:solid;border-color:var(--done)}
+.cats{width:100%;display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.cats button{flex:none;font:inherit;font-size:14px;font-weight:700;padding:7px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--muted);cursor:pointer}
+.cats button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
 .chip-label{width:100%;font-size:13px;color:var(--muted)}
 .qtag{flex:none;font-size:13px;font-weight:700;color:var(--muted);background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:2px 9px;font-variant-numeric:tabular-nums}
 .empty{text-align:center;padding:28px 16px;border:2px dashed var(--line);border-radius:14px;color:var(--muted)}
@@ -400,7 +403,21 @@ new MutationObserver(applyTheme).observe(document.documentElement,{attributes:tr
 applyTheme();
 
 // ---- Grocery list ----
-const SUGGEST=['Milk','Eggs','Bread','Bananas','Apples','Chicken','Ground beef','Rice','Pasta','Cheese','Coffee','Cereal','Butter','Toilet paper','Dish soap'];
+const CATS=[
+  ['Popular',['Milk','Eggs','Bread','Bananas','Chicken','Rice','Coffee','Cheese','Butter','Pasta','Toilet paper','Apples']],
+  ['Fruit & veg',['Bananas','Apples','Oranges','Grapes','Strawberries','Blueberries','Lemons','Avocados','Tomatoes','Potatoes','Onions','Garlic','Carrots','Broccoli','Lettuce','Spinach','Cucumber','Peppers','Mushrooms','Celery','Corn']],
+  ['Meat & fish',['Chicken','Ground beef','Steak','Pork chops','Bacon','Sausages','Ham','Deli meat','Hot dogs','Turkey','Salmon','Tuna','Shrimp']],
+  ['Dairy & eggs',['Milk','Eggs','Butter','Cheese','Shredded cheese','Yogurt','Sour cream','Cream cheese','Cream','Coffee creamer']],
+  ['Bakery',['Bread','Bagels','Buns','Tortillas','English muffins','Muffins','Croissants','Pita']],
+  ['Pantry',['Rice','Pasta','Pasta sauce','Cereal','Oatmeal','Flour','Sugar','Peanut butter','Jam','Canned soup','Canned beans','Canned tomatoes','Cooking oil','Salt','Pepper','Spices','Ketchup','Mustard','Mayo','Hot sauce','Honey','Mac and cheese','Ramen']],
+  ['Frozen',['Frozen pizza','Frozen veggies','Frozen fries','Ice cream','Frozen meals','Chicken nuggets','Waffles','Frozen fruit','Ice']],
+  ['Snacks',['Chips','Crackers','Cookies','Popcorn','Granola bars','Nuts','Pretzels','Chocolate','Candy','Fruit snacks','Salsa']],
+  ['Drinks',['Coffee','Tea','Juice','Pop','Water','Sparkling water','Energy drinks','Sports drinks','Almond milk']],
+  ['Household',['Toilet paper','Paper towels','Dish soap','Dishwasher pods','Laundry detergent','Fabric softener','Garbage bags','Sponges','All-purpose cleaner','Aluminum foil','Plastic wrap','Ziploc bags','Light bulbs','Batteries']],
+  ['Personal care',['Toothpaste','Toothbrush','Shampoo','Conditioner','Body wash','Soap','Deodorant','Razors','Shaving cream','Floss','Tissues','Lotion','Band-Aids','Pain relievers']],
+  ['Pets',['Dog food','Cat food','Cat litter','Pet treats']]
+];
+let curCat='Popular';
 const CHECK='<svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.2 3L13 4.5" stroke="var(--check)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 function groItemEl(g){
   const li=document.createElement('li'); if(g.got) li.className='done';
@@ -424,9 +441,13 @@ function renderGroc(){
   document.getElementById('groCount').textContent=S.groc.length?(need.length+' to buy · '+got.length+' in the cart'):'';
   const have=new Set(S.groc.map(g=>g.text.toLowerCase()));
   const chips=document.getElementById('groChips'); chips.innerHTML='';
-  const left=SUGGEST.filter(x=>!have.has(x.toLowerCase())).slice(0,8);
-  if(left.length){const l=document.createElement('div');l.className='chip-label';l.textContent='Quick add';chips.appendChild(l)}
-  left.forEach(x=>{const b=document.createElement('button');b.type='button';b.textContent='+ '+x;b.onclick=()=>{addGroc(x,'')};chips.appendChild(b)});
+  const l=document.createElement('div');l.className='chip-label';l.textContent='Quick add';chips.appendChild(l);
+  const cats=document.createElement('div');cats.className='cats';cats.setAttribute('role','group');cats.setAttribute('aria-label','Quick add categories');
+  CATS.forEach(([name])=>{const c=document.createElement('button');c.type='button';c.textContent=name;c.setAttribute('aria-pressed',name===curCat);c.onclick=()=>{curCat=name;renderGroc()};cats.appendChild(c)});
+  chips.appendChild(cats);
+  const items=(CATS.find(c=>c[0]===curCat)||CATS[0])[1].filter(x=>!have.has(x.toLowerCase()));
+  if(!items.length){const n=document.createElement('div');n.className='chip-label';n.textContent='Everything in '+curCat+' is already on your list.';chips.appendChild(n)}
+  items.forEach(x=>{const b=document.createElement('button');b.type='button';b.textContent='+ '+x;b.onclick=()=>{addGroc(x,'')};chips.appendChild(b)});
 }
 function addGroc(text,qty){
   const ex=S.groc.find(g=>g.text.toLowerCase()===text.toLowerCase());
