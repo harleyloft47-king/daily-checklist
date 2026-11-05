@@ -118,6 +118,8 @@ input{flex:1 1 220px;min-width:0}
 .steps b{font-weight:700}
 .steps .k{display:inline-block;padding:0 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);font-size:14px}
 .note{font-size:14px;color:var(--muted)}
+.wrong-link{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:12px;border-radius:12px;border:2px solid var(--accent);background:var(--bg)}
+.wrong-link .url{font-weight:700;overflow-wrap:anywhere;user-select:all}
 .foot-links{display:flex;gap:14px;flex-wrap:wrap}
 .cheer{text-align:center;font-family:var(--display);font-weight:600;font-size:18px;padding:14px;border-radius:14px;background:var(--surface);border:2px dashed var(--done);color:var(--done)}
 .foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
@@ -172,6 +174,12 @@ input{flex:1 1 220px;min-width:0}
     <div class="install-top">
       <div><h2>Add it to your phone or computer</h2><p>Open it like an app, straight from your home screen.</p></div>
       <button class="link" id="installHide" type="button">Hide</button>
+    </div>
+    <div class="wrong-link" id="wrongLink" hidden>
+      <b>Use this link to install it with its proper icon:</b>
+      <span class="url" id="siteUrl">https://harleyloft47-king.github.io/daily-checklist/</span>
+      <button type="button" class="add" id="copyUrl">Copy link</button>
+      <span class="note">Open it in Safari (iPhone) or Chrome (Android), then follow the steps below.</span>
     </div>
     <div class="tabs" role="tablist" aria-label="Device">
       <button type="button" role="tab" data-dev="iphone">iPhone or iPad</button>
@@ -365,6 +373,12 @@ applyTheme();
   }
   document.querySelectorAll('.tabs [data-dev]').forEach(b=>b.onclick=()=>pick(b.dataset.dev));
   pick(dev);
+  if(!/github\.io$/.test(location.hostname)){
+    document.getElementById('wrongLink').hidden=false;
+    const cb=document.getElementById('copyUrl'), u=document.getElementById('siteUrl');
+    cb.onclick=()=>{const t=u.textContent;const done=()=>{cb.textContent='Copied';setTimeout(()=>cb.textContent='Copy link',1500)};
+      try{navigator.clipboard.writeText(t).then(done,()=>{getSelection().selectAllChildren(u)})}catch(e){getSelection().selectAllChildren(u)}};
+  }
   let hidden=standalone; try{if(localStorage.getItem('dailyChecklist.installHidden')==='1') hidden=true}catch(e){}
   function setHidden(h){box.hidden=h;show.hidden=!h;try{localStorage.setItem('dailyChecklist.installHidden',h?'1':'0')}catch(e){}}
   box.hidden=hidden; show.hidden=!hidden;
