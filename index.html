@@ -291,6 +291,7 @@ input{flex:1 1 220px;min-width:0}
       <button class="ghost" type="button" id="icsAll" style="align-self:flex-start">Add all reminders to my phone's calendar</button>
       <span class="bud-msg" id="icsMsg" hidden></span>
     </div>
+    <div class="bud-msg" id="verLine"></div>
     <button class="set-done" id="setDone" type="button">Done</button>
   </div>
 
@@ -304,6 +305,7 @@ input{flex:1 1 220px;min-width:0}
   <div class="view" id="viewTasks" role="tabpanel" aria-labelledby="tabTasks">
   <div class="bud-card banner" id="apptBanner" hidden></div>
 
+  <div class="bud-card banner" id="updBanner" hidden><b>A new version of the app is ready.</b><button class="add" type="button" id="updBtn" style="align-self:flex-start">Update now</button></div>
   <div class="cheer" id="cheer" hidden>Everything's done today. Nice work!</div>
   <div id="lists"></div>
 
@@ -1227,6 +1229,31 @@ checkNotifications();
 setInterval(checkNotifications,60000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){checkNotifications();renderBanner()}});
 
+// ---- Stay up to date ----
+const APP_VERSION='2026-11-09 20:42';
+(function(){
+  const vl=document.getElementById('verLine');
+  if(vl) vl.textContent=APP_VERSION==='dev'?'':'App version '+APP_VERSION;
+  if(!onSite) return;
+  const typing=()=>{const a=document.activeElement;return a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)&&a.type!=='checkbox'};
+  async function check(){
+    try{
+      if('serviceWorker' in navigator){const r=await navigator.serviceWorker.getRegistration();if(r) r.update().catch(()=>{})}
+      const res=await fetch('version.json?t='+Date.now(),{cache:'no-store'}); if(!res.ok) return;
+      const {v}=await res.json();
+      if(v&&v!==APP_VERSION){
+        if(!typing()&&document.getElementById('settings').hidden&&document.getElementById('apptForm').hidden) location.reload();
+        else document.getElementById('updBanner').hidden=false;
+      }
+    }catch(e){}
+  }
+  document.getElementById('updBtn').onclick=()=>location.reload();
+  setTimeout(check,1500);
+  setInterval(check,15*60000);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden) check()});
+  window.addEventListener('pageshow',e=>{if(e.persisted) check()});
+})();
+
 // ---- Switch between Tasks, Groceries, Budget and Calendar ----
 const VIEWS={tasks:['viewTasks','tabTasks'],groceries:['viewGroc','tabGroc'],budget:['viewBud','tabBud'],calendar:['viewCal','tabCal']};
 function showView(v){
@@ -1274,7 +1301,7 @@ renderGroc();
 document.getElementById('date').textContent=new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.day!==today()){S=load();save();render()}});
 save();render();
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(()=>{}))}
 </script>
 
 </html>
