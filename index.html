@@ -262,11 +262,23 @@ input{flex:1 1 220px;min-width:0}
 .type-chips{display:flex;flex-wrap:wrap;gap:6px}
 .type-chips button{font:inherit;font-size:14px;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;display:flex;align-items:center;gap:6px}
 .type-chips button i{width:9px;height:9px;border-radius:50%}
+.type-chips .chip-wrap{display:inline-flex;align-items:center;border-radius:999px}
+.type-chips .chip-wrap button.t{border-radius:999px 0 0 999px;border-right:0;padding-right:8px}
+.type-chips .chip-wrap button.x{border-radius:0 999px 999px 0;padding:7px 10px 7px 6px;color:var(--muted);font-size:15px;line-height:1}
+.type-chips .chip-wrap button.t[aria-pressed="true"]+button.x{border-color:var(--ink);background:var(--surface);box-shadow:inset -1px 0 0 0 var(--ink),inset 0 1px 0 0 var(--ink),inset 0 -1px 0 0 var(--ink)}
+.type-chips button.new{border-style:dashed;color:var(--ink)}
+.type-new{display:flex;flex-direction:column;gap:10px;padding:12px;border:1px dashed var(--line);border-radius:12px;background:var(--bg)}
+.type-new input{width:100%}
+.swatch-row{display:flex;flex-wrap:wrap;gap:8px}
+.swatch-row button{width:32px;height:32px;border-radius:50%;border:3px solid var(--surface);box-shadow:0 0 0 1px var(--line);cursor:pointer;padding:0}
+.swatch-row button[aria-pressed="true"]{box-shadow:0 0 0 2.5px var(--ink)}
 .type-chips button[aria-pressed="true"]{border-color:var(--ink);background:var(--surface);font-weight:700;box-shadow:inset 0 0 0 1px var(--ink)}
 .form-row{display:flex;gap:8px;flex-wrap:wrap}
 .form-row>*{flex:1 1 140px;min-width:0}
 .cal-form textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-height:70px;resize:vertical;width:100%}
-.cal-form input,.cal-form select{width:100%}
+.cal-form input,.cal-form select{width:100%;flex:none}
+.type-new input{flex:none}
+.cal-form .form-row>*{flex:1 1 140px}
 .cal-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .ghost{font:inherit;font-weight:700;border-radius:12px;padding:12px 16px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
 .danger{color:var(--over)}
@@ -303,7 +315,7 @@ input{flex:1 1 220px;min-width:0}
       <details><summary><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.5 12.5l2.3 2.3 4.7-5"/></svg></span>Tasks and chores</summary><div class="help-body"><ul><li><b>Tap a task</b> to check it off. Tap it again to undo.</li><li>Tasks are grouped into <b>Morning</b>, <b>Afternoon</b> and <b>Evening</b>.</li><li>To add your own, type it in the box under the list, pick a time of day, and tap <b>Add</b>. Tap <b>×</b> to remove one.</li><li>The circle at the top fills up as you go. Finish everything in a day to build a <b>streak</b>.</li><li>Checkmarks clear every morning, but your list stays.</li><li><b>Your progress</b> at the bottom compares this week with last week, day by day.</li></ul><button class="goto" type="button" data-goto="tasks">Go to Tasks</button></div></details>
       <details><summary><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2.5l2.2 10.2a1.5 1.5 0 0 0 1.5 1.2h7.9a1.5 1.5 0 0 0 1.5-1.1L20.5 8H6.4"/><circle cx="9.5" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg></span>Grocery list</summary><div class="help-body"><ul><li>Type an item and tap <b>Add</b>. The second box is for how many, like "2" or "1 lb".</li><li>Or tap a category under <b>Quick add</b> (Fruit &amp; veg, Pantry, Household and more) and tap items to add them.</li><li>At the store, tap items as they go in the cart. They move to <b>In the cart</b>.</li><li>When you’re done, tap <b>Clear items in the cart</b>.</li><li><b>Copy list to text someone</b> copies what’s left so you can paste it in a message.</li></ul><button class="goto" type="button" data-goto="groceries">Go to Groceries</button></div></details>
       <details><summary><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M3 10h13a2 2 0 0 1 2 2v0a2 2 0 0 1-2 2H3"/></svg></span>Budget</summary><div class="help-body"><ul><li>The first time, enter how much you can spend each month.</li><li><b>Overview</b> shows what’s left, money in vs. out, category limits and the last 6 months.</li><li><b>Spending</b>: choose <b>I spent money</b> or <b>I got paid</b>, enter the amount, and tap <b>Add</b>.</li><li><b>Bills</b>: add rent, phone and other monthly bills with the day they’re due. Tap <b>Mark paid</b> each month when you pay.</li><li><b>Goals</b>: name something you’re saving for, set an amount, and add money as you save.</li><li>Tap <b>Set limits</b> on the Overview to cap a category like Eating out. The bar turns gold when you’re close and red when you’re over.</li><li>Use the <b>‹ ›</b> arrows to look at past months.</li></ul><button class="goto" type="button" data-goto="budget">Go to Budget</button></div></details>
-      <details><summary><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span>Calendar and appointments</summary><div class="help-body"><ul><li>Tap a day, then <b>+ Add appointment</b>.</li><li>Pick a type (Doctor, Dentist, Car and more), give it a name, and add a time, place or notes if you like.</li><li>Set it to <b>repeat</b> for things like a tire rotation every 6 months.</li><li>Coloured dots show which days have something booked. Tap an appointment to change or delete it.</li><li>Anything today or tomorrow also shows in the <b>Heads up</b> box on the Tasks screen.</li></ul><button class="goto" type="button" data-goto="calendar">Go to Calendar</button></div></details>
+      <details><summary><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span>Calendar and appointments</summary><div class="help-body"><ul><li>Tap a day, then <b>+ Add appointment</b>.</li><li>Pick a type (Doctor, Dentist, Car and more), give it a name, and add a time, place or notes if you like.</li><li>Need a different type? Tap <b>+ Add your own</b>, name it, and pick a colour. Tap the <b>×</b> on one you made to remove it.</li><li>Set it to <b>repeat</b> for things like a tire rotation every 6 months.</li><li>Coloured dots show which days have something booked. Tap an appointment to change or delete it.</li><li>Anything today or tomorrow also shows in the <b>Heads up</b> box on the Tasks screen.</li></ul><button class="goto" type="button" data-goto="calendar">Go to Calendar</button></div></details>
       <details><summary><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg></span>Reminders and notifications</summary><div class="help-body"><ul><li>Open the <b>gear</b>, then tap <b>Turn on notifications</b> and choose <b>Allow</b>.</li><li>On iPhone this only works when you open the app from your <b>home screen</b>.</li><li>Choose which reminders you want: appointments, bills, and morning, afternoon or evening chores, each with its own time.</li><li>Phones can pause the app when it’s closed, so a reminder may come late. For alerts that always arrive, tap <b>Add all reminders to my phone’s calendar</b>.</li></ul><button class="goto" type="button" data-goto="settings">Open Settings</button></div></details>
       <details><summary><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></span>Colours and dark mode</summary><div class="help-body"><ul><li>Open the <b>gear</b> and pick a colour combination.</li><li>Under <b>Light or dark</b>, choose Light, Dark, or Match device.</li></ul></div></details>
       <details><summary><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg></span>Put it on your home screen</summary><div class="help-body"><ul><li><b>iPhone:</b> open the link in Safari, tap <b>Share</b>, then <b>Add to Home Screen</b>.</li><li><b>Android:</b> open it in Chrome, tap <b>⋮</b>, then <b>Add to Home screen</b> or <b>Install app</b>.</li><li>Full steps for every device are in the <b>Add it to your phone or computer</b> box at the bottom of the app.</li></ul><button class="goto" type="button" data-goto="install">Show me the steps</button></div></details>
@@ -506,6 +518,12 @@ input{flex:1 1 220px;min-width:0}
     <form class="bud-card cal-form" id="apptForm" hidden>
       <div class="left-label" id="formTitle">New appointment</div>
       <div class="type-chips" id="typeChips" role="group" aria-label="Type"></div>
+      <div class="type-new" id="typeNew" hidden>
+        <input id="typeName" type="text" placeholder="Name it, like 'Physio' or 'Vet'" maxlength="20" autocomplete="off" aria-label="New type name">
+        <div class="swatch-row" id="typeSwatches" role="group" aria-label="Colour"></div>
+        <div class="cal-actions"><button class="add" type="button" id="typeSave">Add button</button><button class="ghost" type="button" id="typeCancel">Cancel</button></div>
+        <span class="bud-msg" id="typeMsg" hidden></span>
+      </div>
       <input id="apTitle" type="text" placeholder="What is it? Like 'Dentist cleaning'" maxlength="60" autocomplete="off" aria-label="Title">
       <div class="form-row">
         <input id="apDate" type="date" aria-label="Date">
@@ -1037,7 +1055,11 @@ document.getElementById('budSetForm').addEventListener('submit',e=>{
 
 // ---- Calendar ----
 const ATYPES=[['Doctor','#d9534f'],['Dentist','#1fa2a6'],['Car','#3b7dd8'],['Eye doctor','#8a5cd6'],['Haircut','#e08a1e'],['Work','#6b7d78'],['Pet','#a0662f'],['Other','#c24f9a']];
-const tcolor=t=>(ATYPES.find(x=>x[0]===t)||ATYPES[ATYPES.length-1])[1];
+const TCOLORS=['#e4572e','#f2a541','#2a9d8f','#3b7dd8','#7b5cd6','#d6457a','#5c946e','#8d6e63','#4a5a57'];
+if(!Array.isArray(S.calTypes)) S.calTypes=[];
+const allTypes=()=>[...ATYPES.slice(0,-1),...S.calTypes,ATYPES[ATYPES.length-1]];
+const tcolor=t=>(allTypes().find(x=>x[0]===t)||ATYPES[ATYPES.length-1])[1];
+let newColor=TCOLORS[0];
 let calMonth=today().slice(0,7), calSel=today(), apType='Doctor', editId=null;
 const pd=n=>String(n).padStart(2,'0');
 const toDate=k=>{const [y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d)};
@@ -1115,11 +1137,40 @@ function renderBanner(){
 }
 function renderTypeChips(){
   const w=document.getElementById('typeChips'); w.innerHTML='';
-  ATYPES.forEach(([t,c])=>{const b=document.createElement('button');b.type='button';b.innerHTML='<i></i><span></span>';b.firstChild.style.background=c;b.lastChild.textContent=t;b.setAttribute('aria-pressed',t===apType);b.onclick=()=>{apType=t;renderTypeChips()};w.appendChild(b)});
+  const custom=new Set(S.calTypes.map(x=>x[0]));
+  allTypes().forEach(([t,c])=>{
+    const b=document.createElement('button');b.type='button';b.innerHTML='<i></i><span></span>';b.firstChild.style.background=c;b.lastChild.textContent=t;b.setAttribute('aria-pressed',t===apType);b.onclick=()=>{apType=t;renderTypeChips()};
+    if(!custom.has(t)){w.appendChild(b);return}
+    const wrap=document.createElement('span');wrap.className='chip-wrap';b.className='t';
+    const x=document.createElement('button');x.type='button';x.className='x';x.textContent='×';x.setAttribute('aria-label','Remove the '+t+' button');
+    x.onclick=()=>{
+      if(x.dataset.confirm!=='1'){x.dataset.confirm='1';x.textContent='Remove?';setTimeout(()=>{if(x.isConnected){x.dataset.confirm='';x.textContent='×'}},3000);return}
+      S.calTypes=S.calTypes.filter(y=>y[0]!==t); if(apType===t) apType='Doctor'; save(); renderTypeChips(); if(!document.getElementById('viewCal').hidden) renderCal();
+    };
+    wrap.appendChild(b);wrap.appendChild(x);w.appendChild(wrap);
+  });
+  const nb=document.createElement('button');nb.type='button';nb.className='new';nb.textContent='+ Add your own';
+  nb.onclick=()=>{const p=document.getElementById('typeNew');p.hidden=false;nb.hidden=true;newColor=TCOLORS.find(c=>!allTypes().some(t=>t[1]===c))||TCOLORS[0];renderSwatches();document.getElementById('typeName').focus()};
+  nb.hidden=!document.getElementById('typeNew').hidden;
+  w.appendChild(nb);
 }
+function renderSwatches(){
+  const r=document.getElementById('typeSwatches');r.innerHTML='';
+  TCOLORS.forEach(c=>{const b=document.createElement('button');b.type='button';b.style.background=c;b.setAttribute('aria-label','Colour '+c);b.setAttribute('aria-pressed',c===newColor);b.onclick=()=>{newColor=c;renderSwatches()};r.appendChild(b)});
+}
+function closeTypeNew(){document.getElementById('typeNew').hidden=true;document.getElementById('typeName').value='';document.getElementById('typeMsg').hidden=true;renderTypeChips()}
+document.getElementById('typeCancel').onclick=closeTypeNew;
+function saveType(){
+  const i=document.getElementById('typeName'), name=i.value.trim().replace(/\s+/g,' '), msg=document.getElementById('typeMsg');
+  if(!name){msg.hidden=false;msg.textContent='Give the button a name.';i.focus();return}
+  if(allTypes().some(t=>t[0].toLowerCase()===name.toLowerCase())){msg.hidden=false;msg.textContent='There\'s already a "'+name+'" button.';i.focus();return}
+  S.calTypes.push([name,newColor]); apType=name; save(); closeTypeNew();
+}
+document.getElementById('typeSave').onclick=saveType;
+document.getElementById('typeName').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveType()}});
 function openForm(id){
   editId=id||null; const a=id?S.cal.find(x=>x.id===id):null, f=document.getElementById('apptForm');
-  apType=a?a.type:'Doctor'; renderTypeChips();
+  apType=a?a.type:'Doctor'; document.getElementById('typeNew').hidden=true; renderTypeChips();
   document.getElementById('formTitle').textContent=a?'Edit appointment':'New appointment';
   document.getElementById('apTitle').value=a?a.title:'';
   document.getElementById('apDate').value=a?a.date:calSel;
@@ -1293,7 +1344,7 @@ setInterval(checkNotifications,60000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){checkNotifications();renderBanner()}});
 
 // ---- Stay up to date ----
-const APP_VERSION='2026-11-09 20:50';
+const APP_VERSION='2026-11-09 21:02';
 (function(){
   const vl=document.getElementById('verLine');
   if(vl) vl.textContent=APP_VERSION==='dev'?'':'App version '+APP_VERSION;
