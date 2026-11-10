@@ -61,6 +61,20 @@ header{display:flex;align-items:center;gap:18px}
 .seg button{flex:1;font:inherit;font-size:15px;padding:10px 8px;border:0;background:var(--bg);color:var(--ink);cursor:pointer}
 .seg button+button{border-left:1px solid var(--line)}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--surface);font-weight:700}
+.notif{display:flex;flex-direction:column;gap:12px}
+.notif-status{display:flex;align-items:center;gap:10px;padding:12px;border-radius:12px;background:var(--bg);font-size:15px}
+.notif-status .dot{flex:none;width:10px;height:10px;border-radius:50%;background:var(--muted)}
+.notif-status.on .dot{background:var(--done)} .notif-status.off .dot{background:var(--over)}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);font-size:15px}
+.toggle-row:first-of-type{border-top:0}
+.toggle-row label{flex:1;min-width:0;cursor:pointer}
+.toggle-row small{display:block;color:var(--muted);font-size:13px}
+.toggle-row select,.toggle-row input[type=time]{flex:none;padding:8px 10px;border-radius:10px}
+.switch{flex:none;appearance:none;-webkit-appearance:none;width:48px;height:28px;border-radius:999px;background:var(--line);position:relative;cursor:pointer;transition:background .15s;margin:0}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--surface);transition:transform .15s;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.switch:checked{background:var(--done)} .switch:checked::after{transform:translateX(20px)}
+.switch:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.notif-opts{display:flex;flex-direction:column}
 .set-done{align-self:flex-start;font:inherit;font-weight:700;border:0;border-radius:12px;padding:10px 18px;background:var(--accent);color:var(--accent-ink);cursor:pointer}
 .date{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
 h1{font-family:var(--display);font-weight:800;font-size:clamp(26px,7vw,34px);line-height:1.05;margin:4px 0 6px;text-wrap:balance}
@@ -262,6 +276,19 @@ input{flex:1 1 220px;min-width:0}
     <h2>Settings</h2>
     <div><div class="set-label" id="palLabel">Colours</div><div class="swatches" id="swatches" role="group" aria-labelledby="palLabel"></div></div>
     <div><div class="set-label" id="modeLabel">Light or dark</div><div class="seg" id="modes" role="group" aria-labelledby="modeLabel"><button type="button" data-mode="auto">Match device</button><button type="button" data-mode="light">Light</button><button type="button" data-mode="dark">Dark</button></div></div>
+    <div class="notif" id="notifSec">
+      <div class="set-label">Notifications</div>
+      <div class="notif-status" id="notifStatus"><span class="dot"></span><span id="notifText"></span></div>
+      <div class="cal-actions"><button class="add" type="button" id="notifOn">Turn on notifications</button><button class="ghost" type="button" id="notifTest" hidden>Send a test</button></div>
+      <div class="notif-opts" id="notifOpts">
+        <div class="toggle-row"><label for="nAppt">Appointments<small>A reminder before each one</small></label><select id="nLead" aria-label="How early"><option value="15">15 min before</option><option value="60">1 hour before</option><option value="180">3 hours before</option><option value="1440">1 day before</option></select><input class="switch" type="checkbox" id="nAppt"></div>
+        <div class="toggle-row"><label for="nBills">Bills<small>The day before and the day it's due</small></label><input class="switch" type="checkbox" id="nBills"></div>
+        <div class="toggle-row"><label for="nChores">Chores<small>If tasks are still left at</small></label><input type="time" id="nChoreTime" aria-label="Chore reminder time"><input class="switch" type="checkbox" id="nChores"></div>
+      </div>
+      <span class="bud-msg" id="notifNote">Your phone may pause the app when it's closed, so a reminder can come late. For alerts that always arrive, add them to your phone's calendar too.</span>
+      <button class="ghost" type="button" id="icsAll" style="align-self:flex-start">Add all reminders to my phone's calendar</button>
+      <span class="bud-msg" id="icsMsg" hidden></span>
+    </div>
     <button class="set-done" id="setDone" type="button">Done</button>
   </div>
 
@@ -539,6 +566,8 @@ function load(){
   if(!s.history||typeof s.history!=='object') s.history={};
   if(!Array.isArray(s.groc)) s.groc=[];
   if(!Array.isArray(s.cal)) s.cal=[];
+  if(!s.notif||typeof s.notif!=='object') s.notif={appt:true,lead:60,bills:true,chores:true,choreTime:'19:00',sent:{}};
+  if(!s.notif.sent) s.notif.sent={};
   if(!s.budget||typeof s.budget!=='object') s.budget={amount:0,exp:[]};
   ['exp','bills','goals'].forEach(k=>{if(!Array.isArray(s.budget[k])) s.budget[k]=[]});
   if(!s.budget.limits||typeof s.budget.limits!=='object') s.budget.limits={};
@@ -1001,10 +1030,19 @@ function renderBanner(){
   const el=document.getElementById('apptBanner'); el.innerHTML='';
   const t=today(), tm=new Date(); tm.setDate(tm.getDate()+1); const tk=dkey(tm);
   const items=[...apptsOn(t).map(a=>[a,t]),...apptsOn(tk).map(a=>[a,tk])];
-  if(!items.length){el.hidden=true;return}
-  const h=document.createElement('div');h.className='left-label';h.textContent='Coming up today and tomorrow';el.appendChild(h);
+  const bills=billsNeedingAttention();
+  if(!items.length&&!bills.length){el.hidden=true;return}
+  const h=document.createElement('div');h.className='left-label';h.textContent='Heads up';el.appendChild(h);
   const ul=document.createElement('ul');ul.style.border='0';ul.style.background='none';
   items.forEach(([a,k])=>{const r=apptRow(a,k,true,false);r.style.borderTop='0';ul.appendChild(r)});
+  bills.forEach(({bill,due,label})=>{
+    const li=document.createElement('li');li.className='appt';li.style.cssText='border-top:0;cursor:pointer';
+    li.innerHTML='<div class="appt-btn"><span class="appt-bar" style="background:var(--over)"></span><span class="when"></span><span class="what"><b></b><span></span></span></div>';
+    li.querySelector('.when').textContent=label; li.querySelector('b').textContent=bill.name+' bill';
+    li.querySelector('.what span').textContent=fmt(bill.amt)+' · tap to see your bills';
+    li.onclick=()=>{location.hash='budget';budSub='bills';renderBudget()};
+    ul.appendChild(li);
+  });
   el.appendChild(ul); el.hidden=false;
 }
 function renderTypeChips(){
@@ -1061,6 +1099,120 @@ document.getElementById('cPrev').onclick=()=>{calMonth=shiftMonth(calMonth,-1);r
 document.getElementById('cNext').onclick=()=>{calMonth=shiftMonth(calMonth,1);renderCal()};
 document.getElementById('cToday').onclick=()=>{calSel=today();calMonth=calSel.slice(0,7);renderCal()};
 renderBanner();
+
+// ---- Notifications ----
+const N=()=>S.notif;
+const onSite=/github\.io$/.test(location.hostname);
+const canNotify=()=>'Notification' in window;
+const isIOS=/iPhone|iPad|iPod/.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&navigator.maxTouchPoints>1);
+const standalone=()=>(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
+function billsNeedingAttention(){
+  const t=today(), m=t.slice(0,7), out=[];
+  S.budget.bills.forEach(bill=>{
+    if(billPaid(bill,m)) return; const due=billDate(bill,m);
+    const n=Math.round((toDate(due)-toDate(t))/864e5);
+    if(n<0) out.push({bill,due,label:'Overdue',n}); else if(n===0) out.push({bill,due,label:'Due today',n}); else if(n<=2) out.push({bill,due,label:n===1?'Tomorrow':'In 2 days',n});
+  });
+  return out.sort((a,b)=>a.n-b.n);
+}
+async function notify(title,body,tag,hash){
+  if(!canNotify()||Notification.permission!=='granted') return false;
+  const opts={body,tag,icon:'app-icon-192.png',badge:'app-icon-192.png',data:{url:'./'+(hash?'#'+hash:'')}};
+  try{
+    if('serviceWorker' in navigator){let reg=await navigator.serviceWorker.getRegistration();if(!reg&&onSite) reg=await Promise.race([navigator.serviceWorker.ready,new Promise(r=>setTimeout(()=>r(null),4000))]);if(reg){await reg.showNotification(title,opts);return true}}
+    const n=new Notification(title,opts); n.onclick=()=>{window.focus();if(hash)location.hash=hash;n.close()}; return true;
+  }catch(e){return false}
+}
+const checking=new Set();
+function at(k,hhmm){const [h,m]=hhmm.split(':').map(Number);const d=toDate(k);d.setHours(h,m,0,0);return d}
+function checkNotifications(){
+  if(!canNotify()||Notification.permission!=='granted') return;
+  const n=N(), now=new Date(), sent=n.sent, t=today(), fire=[];
+  const once=(key,fn)=>{if(!sent[key]&&!checking.has(key)){checking.add(key);fire.push([key,fn])}};
+  if(n.appt){
+    for(let i=0;i<=2;i++){const d=new Date();d.setDate(d.getDate()+i);const k=dkey(d);
+      apptsOn(k).forEach(a=>{
+        const start=a.time?at(k,a.time):at(k,'09:00');
+        const lead=+n.lead||60;
+        const when=a.time?new Date(start-lead*6e4):(lead>=1440?at(dkey(new Date(toDate(k)-864e5)),'18:00'):at(k,'08:00'));
+        if(now>=when&&now<start) once('a:'+a.id+':'+k,()=>{
+          const mins=Math.round((start-now)/6e4);
+          const soon=!a.time?(k===t?'Today':'Tomorrow'):mins<60?'In '+Math.max(1,mins)+' min':mins<1440&&k===t?'Today at '+timeLabel(a.time):'Tomorrow at '+timeLabel(a.time);
+          return notify(a.title,[soon,a.place].filter(Boolean).join(' · '),'appt-'+a.id,'calendar');
+        });
+      });
+    }
+  }
+  if(n.bills&&now.getHours()>=9){
+    billsNeedingAttention().forEach(({bill,due,n:days})=>{
+      if(days===1) once('b:'+bill.id+':'+due+':pre',()=>notify(bill.name+' is due tomorrow',fmt(bill.amt)+' · tap Mark paid once it\'s done','bill-'+bill.id,'budget'));
+      if(days===0) once('b:'+bill.id+':'+due+':day',()=>notify(bill.name+' is due today',fmt(bill.amt),'bill-'+bill.id,'budget'));
+      if(days<0) once('b:'+bill.id+':'+due+':late',()=>notify(bill.name+' is overdue',fmt(bill.amt)+' was due '+toDate(due).toLocaleDateString(undefined,{month:'short',day:'numeric'}),'bill-'+bill.id,'budget'));
+    });
+  }
+  if(n.chores&&S.tasks.length){
+    const left=S.tasks.filter(x=>!S.done.includes(x.id)).length;
+    if(left&&now>=at(t,n.choreTime||'19:00')) once('c:'+t,()=>notify(left+' '+(left===1?'chore':'chores')+' left today',left===S.tasks.length?'You haven\'t started yet. Even one helps!':'You\'re partway there. Finish strong!','chores',''));
+  }
+  const cutoff=Date.now()-45*864e5; Object.keys(sent).forEach(k=>{if(sent[k]<cutoff) delete sent[k]});
+  fire.forEach(([key,f])=>Promise.resolve(f()).then(ok=>{checking.delete(key);if(ok){sent[key]=Date.now();save()}}))
+}
+function renderNotif(){
+  const n=N(), st=document.getElementById('notifStatus'), tx=document.getElementById('notifText'), on=document.getElementById('notifOn'), test=document.getElementById('notifTest');
+  document.getElementById('nAppt').checked=!!n.appt; document.getElementById('nBills').checked=!!n.bills; document.getElementById('nChores').checked=!!n.chores;
+  document.getElementById('nLead').value=String(n.lead||60); document.getElementById('nChoreTime').value=n.choreTime||'19:00';
+  document.getElementById('icsAll').hidden=!onSite;
+  let msg, cls='', showOn=false;
+  if(!onSite){msg='Notifications work in the app from your GitHub link: harleyloft47-king.github.io/daily-checklist'}
+  else if(!canNotify()){msg=isIOS&&!standalone()?'On iPhone, add the app to your home screen first, then open it from there to turn on notifications.':'This browser can\'t show notifications. Try Chrome, or add the app to your home screen.';cls='off'}
+  else if(Notification.permission==='granted'){msg='Notifications are on.';cls='on'}
+  else if(Notification.permission==='denied'){msg='Notifications are blocked. Turn them on for this app in your phone\'s Settings → Notifications, then come back.';cls='off'}
+  else{msg='Notifications are off.';showOn=true}
+  st.className='notif-status '+cls; tx.textContent=msg; on.hidden=!showOn; test.hidden=cls!=='on';
+}
+document.getElementById('notifOn').onclick=async()=>{
+  try{const r=await Notification.requestPermission(); renderNotif(); if(r==='granted'){notify('Notifications are on','You\'ll get reminders for appointments, bills and chores.','welcome','');checkNotifications()}}catch(e){renderNotif()}
+};
+document.getElementById('notifTest').onclick=()=>notify('Test reminder','This is what your reminders will look like.','test','');
+document.getElementById('nAppt').onchange=e=>{N().appt=e.target.checked;save()};
+document.getElementById('nBills').onchange=e=>{N().bills=e.target.checked;save()};
+document.getElementById('nChores').onchange=e=>{N().chores=e.target.checked;save()};
+document.getElementById('nLead').onchange=e=>{N().lead=+e.target.value;save()};
+document.getElementById('nChoreTime').onchange=e=>{if(e.target.value){N().choreTime=e.target.value;save()}};
+document.getElementById('icsAll').onclick=()=>{
+  const esc=t=>String(t||'').replace(/[\;,]/g,m=>'\\'+m).replace(/\n/g,'\\n'), ymd=k=>k.replace(/-/g,''), stamp=new Date().toISOString().replace(/[-:]/g,'').slice(0,15)+'Z';
+  const rr={w1:'FREQ=WEEKLY',w2:'FREQ=WEEKLY;INTERVAL=2',m1:'FREQ=MONTHLY',m3:'FREQ=MONTHLY;INTERVAL=3',m6:'FREQ=MONTHLY;INTERVAL=6',m12:'FREQ=YEARLY'};
+  const ev=[], t=today();
+  const nextDay=k=>{const d=toDate(k);d.setDate(d.getDate()+1);return ymd(dkey(d))};
+  S.cal.forEach(a=>{
+    if((!a.repeat||a.repeat==='none')&&a.date<t) return;
+    const lead=+N().lead||60, L=['BEGIN:VEVENT','UID:'+a.id+'@daily-checklist','DTSTAMP:'+stamp,'SUMMARY:'+esc(a.title)];
+    if(a.time){const [h,m]=a.time.split(':').map(Number);const e=toDate(a.date);e.setHours(h+1,m);L.push('DTSTART:'+ymd(a.date)+'T'+a.time.replace(':','')+'00','DTEND:'+ymd(dkey(e))+'T'+String(e.getHours()).padStart(2,'0')+String(e.getMinutes()).padStart(2,'0')+'00')}
+    else L.push('DTSTART;VALUE=DATE:'+ymd(a.date),'DTEND;VALUE=DATE:'+nextDay(a.date));
+    if(a.place) L.push('LOCATION:'+esc(a.place)); if(a.notes) L.push('DESCRIPTION:'+esc(a.notes)); if(rr[a.repeat]) L.push('RRULE:'+rr[a.repeat]);
+    L.push('BEGIN:VALARM','TRIGGER:'+(a.time?'-PT'+lead+'M':(lead>=1440?'-PT6H':'PT8H')),'ACTION:DISPLAY','DESCRIPTION:'+esc(a.title),'END:VALARM','END:VEVENT'); ev.push(L);
+  });
+  S.budget.bills.forEach(b=>{
+    const m=t.slice(0,7), first=billDate(b,m)<t?billDate(b,shiftMonth(m,1)):billDate(b,m);
+    ev.push(['BEGIN:VEVENT','UID:bill-'+b.id+'@daily-checklist','DTSTAMP:'+stamp,'SUMMARY:'+esc(b.name+' bill due ('+fmt(b.amt)+')'),'DTSTART;VALUE=DATE:'+ymd(first),'DTEND;VALUE=DATE:'+nextDay(first),
+      'RRULE:FREQ=MONTHLY;BYMONTHDAY='+(b.day>28?-1:b.day),'BEGIN:VALARM','TRIGGER:-PT15H','ACTION:DISPLAY','DESCRIPTION:'+esc(b.name+' is due tomorrow'),'END:VALARM',
+      'BEGIN:VALARM','TRIGGER:PT9H','ACTION:DISPLAY','DESCRIPTION:'+esc(b.name+' is due today'),'END:VALARM','END:VEVENT']);
+  });
+  if(N().chores){const ct=(N().choreTime||'19:00').replace(':','')+'00';
+    ev.push(['BEGIN:VEVENT','UID:chores@daily-checklist','DTSTAMP:'+stamp,'SUMMARY:Check off your chores','DTSTART:'+ymd(t)+'T'+ct,'DTEND:'+ymd(t)+'T'+ct.slice(0,2)+String(+ct.slice(2,4)+15).padStart(2,'0')+'00','RRULE:FREQ=DAILY',
+      'DESCRIPTION:Open Daily Checklist: https://harleyloft47-king.github.io/daily-checklist/','BEGIN:VALARM','TRIGGER:PT0S','ACTION:DISPLAY','DESCRIPTION:Check off your chores','END:VALARM','END:VEVENT'])}
+  const msg=document.getElementById('icsMsg'); msg.hidden=false;
+  if(!ev.length){msg.textContent='Add some appointments or bills first, or turn on the chores reminder.';return}
+  const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Daily Checklist//EN',...ev.flat(),'END:VCALENDAR'].join('\r\n');
+  const url=URL.createObjectURL(new Blob([ics],{type:'text/calendar'})), l=document.createElement('a');
+  l.href=url; l.download='daily-checklist-reminders.ics'; document.body.appendChild(l); l.click(); l.remove(); setTimeout(()=>URL.revokeObjectURL(url),5000);
+  msg.textContent='Opening '+ev.length+' reminder'+(ev.length>1?'s':'')+' for your calendar app. Choose "Add All" to save them. If you add more later, tap this again.';
+};
+document.getElementById('gearBtn').addEventListener('click',renderNotif);
+renderNotif();
+checkNotifications();
+setInterval(checkNotifications,60000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){checkNotifications();renderBanner()}});
 
 // ---- Switch between Tasks, Groceries, Budget and Calendar ----
 const VIEWS={tasks:['viewTasks','tabTasks'],groceries:['viewGroc','tabGroc'],budget:['viewBud','tabBud'],calendar:['viewCal','tabCal']};
