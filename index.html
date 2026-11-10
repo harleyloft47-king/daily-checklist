@@ -283,7 +283,9 @@ input{flex:1 1 220px;min-width:0}
       <div class="notif-opts" id="notifOpts">
         <div class="toggle-row"><label for="nAppt">Appointments<small>A reminder before each one</small></label><select id="nLead" aria-label="How early"><option value="15">15 min before</option><option value="60">1 hour before</option><option value="180">3 hours before</option><option value="1440">1 day before</option></select><input class="switch" type="checkbox" id="nAppt"></div>
         <div class="toggle-row"><label for="nBills">Bills<small>The day before and the day it's due</small></label><input class="switch" type="checkbox" id="nBills"></div>
-        <div class="toggle-row"><label for="nChores">Chores<small>If tasks are still left at</small></label><input type="time" id="nChoreTime" aria-label="Chore reminder time"><input class="switch" type="checkbox" id="nChores"></div>
+        <div class="toggle-row"><label for="nSlot-morning">Morning chores<small>If morning tasks are left at</small></label><input type="time" id="nTime-morning" aria-label="Morning reminder time"><input class="switch" type="checkbox" id="nSlot-morning"></div>
+        <div class="toggle-row"><label for="nSlot-afternoon">Afternoon chores<small>If afternoon tasks are left at</small></label><input type="time" id="nTime-afternoon" aria-label="Afternoon reminder time"><input class="switch" type="checkbox" id="nSlot-afternoon"></div>
+        <div class="toggle-row"><label for="nSlot-evening">Evening chores<small>If evening tasks are left at</small></label><input type="time" id="nTime-evening" aria-label="Evening reminder time"><input class="switch" type="checkbox" id="nSlot-evening"></div>
       </div>
       <span class="bud-msg" id="notifNote">Your phone may pause the app when it's closed, so a reminder can come late. For alerts that always arrive, add them to your phone's calendar too.</span>
       <button class="ghost" type="button" id="icsAll" style="align-self:flex-start">Add all reminders to my phone's calendar</button>
@@ -568,6 +570,7 @@ function load(){
   if(!Array.isArray(s.cal)) s.cal=[];
   if(!s.notif||typeof s.notif!=='object') s.notif={appt:true,lead:60,bills:true,chores:true,choreTime:'19:00',sent:{}};
   if(!s.notif.sent) s.notif.sent={};
+  if(!s.notif.slots){const on=s.notif.chores!==false;s.notif.slots={morning:{on,time:'08:00'},afternoon:{on,time:'13:00'},evening:{on,time:s.notif.choreTime||'19:00'}}}
   if(!s.budget||typeof s.budget!=='object') s.budget={amount:0,exp:[]};
   ['exp','bills','goals'].forEach(k=>{if(!Array.isArray(s.budget[k])) s.budget[k]=[]});
   if(!s.budget.limits||typeof s.budget.limits!=='object') s.budget.limits={};
@@ -1150,17 +1153,23 @@ function checkNotifications(){
       if(days<0) once('b:'+bill.id+':'+due+':late',()=>notify(bill.name+' is overdue',fmt(bill.amt)+' was due '+toDate(due).toLocaleDateString(undefined,{month:'short',day:'numeric'}),'bill-'+bill.id,'budget'));
     });
   }
-  if(n.chores&&S.tasks.length){
-    const left=S.tasks.filter(x=>!S.done.includes(x.id)).length;
-    if(left&&now>=at(t,n.choreTime||'19:00')) once('c:'+t,()=>notify(left+' '+(left===1?'chore':'chores')+' left today',left===S.tasks.length?'You haven\'t started yet. Even one helps!':'You\'re partway there. Finish strong!','chores',''));
-  }
+  const slots=GROUPS.map(([g,name])=>[g,name,n.slots[g]]).filter(x=>x[2]&&x[2].on).sort((x,y)=>x[2].time.localeCompare(y[2].time));
+  slots.forEach(([g,name,cfg],i)=>{
+    const start=at(t,cfg.time), next=slots[i+1]?at(t,slots[i+1][2].time):at(dkey(new Date(toDate(t).getTime()+864e5)),'00:00');
+    if(now<start||now>=next) return;
+    const left=S.tasks.filter(x=>x.when===g&&!S.done.includes(x.id));
+    if(!left.length) return;
+    const names=left.slice(0,3).map(x=>x.text).join(', ')+(left.length>3?' and '+(left.length-3)+' more':'');
+    once('c:'+g+':'+t,()=>notify(name+' chores: '+left.length+' left',names,'chores-'+g,''));
+  });
   const cutoff=Date.now()-45*864e5; Object.keys(sent).forEach(k=>{if(sent[k]<cutoff) delete sent[k]});
   fire.forEach(([key,f])=>Promise.resolve(f()).then(ok=>{checking.delete(key);if(ok){sent[key]=Date.now();save()}}))
 }
 function renderNotif(){
   const n=N(), st=document.getElementById('notifStatus'), tx=document.getElementById('notifText'), on=document.getElementById('notifOn'), test=document.getElementById('notifTest');
-  document.getElementById('nAppt').checked=!!n.appt; document.getElementById('nBills').checked=!!n.bills; document.getElementById('nChores').checked=!!n.chores;
-  document.getElementById('nLead').value=String(n.lead||60); document.getElementById('nChoreTime').value=n.choreTime||'19:00';
+  document.getElementById('nAppt').checked=!!n.appt; document.getElementById('nBills').checked=!!n.bills;
+  GROUPS.forEach(([g])=>{document.getElementById('nSlot-'+g).checked=!!n.slots[g].on;document.getElementById('nTime-'+g).value=n.slots[g].time});
+  document.getElementById('nLead').value=String(n.lead||60);
   document.getElementById('icsAll').hidden=!onSite;
   let msg, cls='', showOn=false;
   if(!onSite){msg='Notifications work in the app from your GitHub link: harleyloft47-king.github.io/daily-checklist'}
@@ -1176,9 +1185,12 @@ document.getElementById('notifOn').onclick=async()=>{
 document.getElementById('notifTest').onclick=()=>notify('Test reminder','This is what your reminders will look like.','test','');
 document.getElementById('nAppt').onchange=e=>{N().appt=e.target.checked;save()};
 document.getElementById('nBills').onchange=e=>{N().bills=e.target.checked;save()};
-document.getElementById('nChores').onchange=e=>{N().chores=e.target.checked;save()};
+GROUPS.forEach(([g])=>{
+  document.getElementById('nSlot-'+g).onchange=e=>{N().slots[g].on=e.target.checked;save()};
+  document.getElementById('nTime-'+g).onchange=e=>{if(e.target.value){N().slots[g].time=e.target.value;save()}};
+});
 document.getElementById('nLead').onchange=e=>{N().lead=+e.target.value;save()};
-document.getElementById('nChoreTime').onchange=e=>{if(e.target.value){N().choreTime=e.target.value;save()}};
+
 document.getElementById('icsAll').onclick=()=>{
   const esc=t=>String(t||'').replace(/[\;,]/g,m=>'\\'+m).replace(/\n/g,'\\n'), ymd=k=>k.replace(/-/g,''), stamp=new Date().toISOString().replace(/[-:]/g,'').slice(0,15)+'Z';
   const rr={w1:'FREQ=WEEKLY',w2:'FREQ=WEEKLY;INTERVAL=2',m1:'FREQ=MONTHLY',m3:'FREQ=MONTHLY;INTERVAL=3',m6:'FREQ=MONTHLY;INTERVAL=6',m12:'FREQ=YEARLY'};
@@ -1198,11 +1210,12 @@ document.getElementById('icsAll').onclick=()=>{
       'RRULE:FREQ=MONTHLY;BYMONTHDAY='+(b.day>28?-1:b.day),'BEGIN:VALARM','TRIGGER:-PT15H','ACTION:DISPLAY','DESCRIPTION:'+esc(b.name+' is due tomorrow'),'END:VALARM',
       'BEGIN:VALARM','TRIGGER:PT9H','ACTION:DISPLAY','DESCRIPTION:'+esc(b.name+' is due today'),'END:VALARM','END:VEVENT']);
   });
-  if(N().chores){const ct=(N().choreTime||'19:00').replace(':','')+'00';
-    ev.push(['BEGIN:VEVENT','UID:chores@daily-checklist','DTSTAMP:'+stamp,'SUMMARY:Check off your chores','DTSTART:'+ymd(t)+'T'+ct,'DTEND:'+ymd(t)+'T'+ct.slice(0,2)+String(+ct.slice(2,4)+15).padStart(2,'0')+'00','RRULE:FREQ=DAILY',
-      'DESCRIPTION:Open Daily Checklist: https://harleyloft47-king.github.io/daily-checklist/','BEGIN:VALARM','TRIGGER:PT0S','ACTION:DISPLAY','DESCRIPTION:Check off your chores','END:VALARM','END:VEVENT'])}
+  GROUPS.forEach(([g,name])=>{const c=N().slots[g]; if(!c.on) return; const ct=c.time.replace(':','')+'00';
+    const e=new Date(at(t,c.time).getTime()+15*6e4), ed=String(e.getHours()).padStart(2,'0')+String(e.getMinutes()).padStart(2,'0')+'00';
+    ev.push(['BEGIN:VEVENT','UID:chores-'+g+'@daily-checklist','DTSTAMP:'+stamp,'SUMMARY:'+name+' chores','DTSTART:'+ymd(t)+'T'+ct,'DTEND:'+ymd(dkey(e))+'T'+ed,'RRULE:FREQ=DAILY',
+      'DESCRIPTION:Open Daily Checklist: https://harleyloft47-king.github.io/daily-checklist/','BEGIN:VALARM','TRIGGER:PT0S','ACTION:DISPLAY','DESCRIPTION:'+name+' chores','END:VALARM','END:VEVENT'])});
   const msg=document.getElementById('icsMsg'); msg.hidden=false;
-  if(!ev.length){msg.textContent='Add some appointments or bills first, or turn on the chores reminder.';return}
+  if(!ev.length){msg.textContent='Add some appointments or bills first, or turn on a chores reminder.';return}
   const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Daily Checklist//EN',...ev.flat(),'END:VCALENDAR'].join('\r\n');
   const url=URL.createObjectURL(new Blob([ics],{type:'text/calendar'})), l=document.createElement('a');
   l.href=url; l.download='daily-checklist-reminders.ics'; document.body.appendChild(l); l.click(); l.remove(); setTimeout(()=>URL.revokeObjectURL(url),5000);
